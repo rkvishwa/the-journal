@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head('Register — ' + ${siteSettings.siteName})}"></head>
+<body class="public-body">
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="auth-page">
+	<div class="auth-card">
+		<h1>Create account</h1>
+		<p class="auth-subtitle">Join to write, save posts, and follow creators.</p>
+		<form th:action="@{/register}" th:object="${registerForm}" method="post">
+			<p class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+			<label>
+				<span>Email</span>
+				<input type="email" th:field="*{email}" required>
+				<small class="error" th:errors="*{email}"></small>
+			</label>
+			<label>
+				<span>Username</span>
+				<input type="text" th:field="*{username}" required>
+				<small class="error" th:errors="*{username}"></small>
+			</label>
+			<label>
+				<span>Password</span>
+				<input type="password" th:field="*{password}" required>
+				<small class="error" th:errors="*{password}"></small>
+			</label>
+			<label>
+				<span>Confirm password</span>
+				<input type="password" th:field="*{confirmPassword}" required>
+				<small class="error" th:errors="*{confirmPassword}"></small>
+			</label>
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			<button type="submit" class="auth-submit">Create account</button>
+		</form>
+		<div class="auth-divider" aria-hidden="true"><span>or</span></div>
+		<a class="auth-google-btn" th:href="@{/oauth2/authorization/google}">
+			<img class="auth-google-icon" th:src="@{/images/google.svg}" alt="">
+			<span>Continue with Google</span>
+		</a>
+		<p class="auth-signup-prompt">
+			Already have an account?
+			<a th:href="@{/login}">Sign in</a>
+		</p>
+	</div>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

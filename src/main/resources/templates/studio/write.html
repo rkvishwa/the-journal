@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/studio-layout :: studio-editor-head('Write — Studio')}"></head>
+<body class="admin-body admin-panel-body studio-write-body">
+<div class="admin-shell studio-shell">
+	<aside th:replace="~{fragments/studio-layout :: sidebar(activePage='write')}"></aside>
+	<div class="admin-main">
+		<header th:replace="~{fragments/studio-layout :: topbar(pageTitle='Write')}"></header>
+		<div class="studio-write-content">
+			<form class="studio-write-form" th:action="@{${action}}" th:object="${postForm}" method="post">
+				<header class="studio-write-bar">
+					<div class="studio-write-toolbar">
+						<label class="studio-keywords-field">
+							<span>Keywords</span>
+							<input th:field="*{keywords}" placeholder="writing, ideas, spring">
+						</label>
+						<div class="studio-toolbar-actions">
+							<button type="button" class="button ghost studio-schedule-toggle" id="schedule-toggle"
+									th:classappend="${postForm.status?.name() == 'SCHEDULED'} ? 'is-active' : ''">
+								Schedule
+							</button>
+							<button type="submit" class="button secondary studio-action-btn" data-status="DRAFT">
+								Save draft
+							</button>
+							<button type="submit" class="button studio-action-btn studio-publish-btn" data-status="PUBLISHED">
+								Publish
+							</button>
+						</div>
+					</div>
+					<div class="studio-schedule-panel" id="schedule-panel"
+						 th:classappend="${postForm.status?.name() != 'SCHEDULED'} ? 'is-hidden' : ''">
+						<div class="studio-schedule-inner">
+							<label class="studio-schedule-field" for="scheduledAt">
+								<span>Publish at</span>
+								<input type="datetime-local" id="scheduledAt" th:field="*{scheduledAt}">
+							</label>
+						</div>
+						<button type="submit" class="button studio-action-btn studio-schedule-btn" data-status="SCHEDULED">
+							Schedule post
+						</button>
+					</div>
+					<input type="hidden" th:field="*{status}" id="post-status">
+				</header>
+				<main class="studio-write-main">
+					<input class="studio-title-input" th:field="*{title}" maxlength="160" required placeholder="Title">
+					<textarea class="studio-excerpt-input" th:field="*{excerpt}" maxlength="320" required placeholder="Tell readers what this is about…"></textarea>
+					<textarea class="content-input rich-text-input" th:field="*{contentHtml}" hidden></textarea>
+					<div id="blog-editor" class="blog-editor studio-editor" th:utext="${postForm.contentHtml}"></div>
+					<small class="error" th:errors="*{title}"></small>
+					<small class="error" th:errors="*{excerpt}"></small>
+					<small class="error" th:errors="*{contentHtml}"></small>
+					<small class="error" th:errors="*{scheduleValid}"></small>
+				</main>
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			</form>
+		</div>
+	</div>
+</div>
+<script th:src="@{/js/app.js}" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js" defer></script>
+<script th:src="@{/js/studio-editor.js}" defer></script>
+</body>
+</html>

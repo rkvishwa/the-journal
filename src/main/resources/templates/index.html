@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head(${siteSettings.siteName})}"></head>
+<body class="public-body">
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="public-main catalog-main">
+	<section class="catalog-hero">
+		<h1 th:text="${siteSettings.siteName}">The Journal</h1>
+		<p th:text="${siteSettings.tagline}">Ideas worth keeping.</p>
+	</section>
+
+	<section class="feed-section">
+		<h2>Latest</h2>
+		<div class="catalog-grid" th:if="${!latestPosts.isEmpty()}">
+			<article class="catalog-card" th:each="post : ${latestPosts}">
+				<a class="catalog-card-link" th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}"
+					 th:attr="aria-label=${'Read ' + post.title}"></a>
+				<div class="catalog-card-meta">
+					<a class="author-link catalog-card-author" th:href="@{'/@' + ${post.author.username}}">
+						<img th:replace="~{fragments/layout :: avatar-img(${post.author.avatarUrl}, 'author-avatar-sm')}">
+						<span th:text="${post.author.displayName}">Author</span>
+					</a>
+					<time th:text="${#temporals.format(post.publishedAt, 'MMM d, yyyy')}">Jul 14, 2026</time>
+				</div>
+				<h3 class="catalog-card-title" th:text="${post.title}">Title</h3>
+				<p class="catalog-card-excerpt" th:text="${post.excerpt}">Excerpt</p>
+			</article>
+		</div>
+		<p class="empty-state" th:if="${latestPosts.isEmpty()}">No published stories yet. Be the first to write.</p>
+	</section>
+
+	<section class="feed-section">
+		<h2>Discover</h2>
+		<div class="catalog-grid" th:if="${!discoverPosts.isEmpty()}">
+			<article class="catalog-card" th:each="post : ${discoverPosts}">
+				<a class="catalog-card-link" th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}"
+					 th:attr="aria-label=${'Read ' + post.title}"></a>
+				<div class="catalog-card-meta">
+					<a class="author-link catalog-card-author" th:href="@{'/@' + ${post.author.username}}">
+						<img th:replace="~{fragments/layout :: avatar-img(${post.author.avatarUrl}, 'author-avatar-sm')}">
+						<span th:text="${post.author.displayName}">Author</span>
+					</a>
+				</div>
+				<h3 class="catalog-card-title" th:text="${post.title}">Title</h3>
+				<p class="catalog-card-excerpt" th:text="${post.excerpt}">Excerpt</p>
+			</article>
+		</div>
+	</section>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

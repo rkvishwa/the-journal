@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: public-head('Creators — ' + ${siteSettings.siteName})}"></head>
+<body class="public-body">
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="public-main">
+	<h1>Creators</h1>
+	<div class="creator-grid">
+		<article class="creator-card" th:each="creator : ${creators}">
+			<a th:href="@{'/@' + ${creator.username}}">
+				<img th:replace="~{fragments/layout :: avatar-img(${creator.avatarUrl}, 'author-avatar-sm')}">
+				<h3 th:text="${creator.displayName}">Name</h3>
+				<p th:text="'@' + ${creator.username}">@user</p>
+			</a>
+		</article>
+	</div>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

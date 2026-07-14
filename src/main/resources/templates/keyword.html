@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head(${keywordName + ' — ' + siteSettings.siteName})}"></head>
+<body class="public-body">
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="public-main">
+	<nav class="topic-nav">
+		<a class="back-link" th:href="@{/}">← Back to journal</a>
+	</nav>
+	<section class="topic-header">
+		<p class="intro-label">Topic</p>
+		<h1 class="topic-title" th:text="${keywordName}">Keyword</h1>
+		<p class="topic-count" th:text="|${posts.size()} ${posts.size() == 1 ? 'article' : 'articles'}|">3 articles</p>
+	</section>
+	<section class="feed-list" th:if="${!posts.isEmpty()}">
+		<article class="feed-card" th:each="post : ${posts}">
+			<div class="feed-card-top">
+				<time class="feed-date" th:text="${#temporals.format(post.publishedAt, 'MMM d, yyyy')}">Jul 13, 2026</time>
+			</div>
+			<h3 class="feed-title">
+				<a th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}" th:text="${post.title}">Post title</a>
+			</h3>
+			<p class="feed-excerpt" th:text="${post.excerpt}">Excerpt</p>
+		</article>
+	</section>
+	<div class="empty-state" th:if="${posts.isEmpty()}">
+		<p class="empty-title">No articles yet</p>
+		<p>Nothing has been published under this topic.</p>
+	</div>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

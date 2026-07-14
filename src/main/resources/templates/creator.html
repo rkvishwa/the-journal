@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head(${creator.displayName + ' — ' + siteSettings.siteName})}"></head>
+<body class="public-body">
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="public-main creator-page">
+	<section class="creator-header">
+		<img th:replace="~{fragments/layout :: avatar-img(${creator.avatarUrl}, 'creator-avatar')}">
+		<h1 th:text="${creator.displayName}">Creator</h1>
+		<p th:text="'@' + ${creator.username}">@username</p>
+		<p th:if="${creator.bio}" th:text="${creator.bio}">Bio</p>
+		<form sec:authorize="isAuthenticated()" th:action="@{/engagement/creators/{username}/subscribe(username=${creator.username})}" method="post" class="inline-form">
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			<button type="submit" th:text="${subscribed} ? 'Unfollow' : 'Follow'">Follow</button>
+		</form>
+		<p sec:authorize="!isAuthenticated()"><a th:href="@{/login}">Sign in</a> to follow this creator.</p>
+	</section>
+	<section class="feed-section">
+		<h2>Stories</h2>
+		<div class="catalog-grid">
+			<article class="catalog-card" th:each="post : ${posts}">
+				<a class="catalog-card-link" th:href="@{'/@' + ${creator.username} + '/' + ${post.slug}}"
+					 th:attr="aria-label=${'Read ' + post.title}"></a>
+				<h3 class="catalog-card-title" th:text="${post.title}">Title</h3>
+				<p class="catalog-card-excerpt" th:text="${post.excerpt}">Excerpt</p>
+			</article>
+		</div>
+		<p class="empty-state" th:if="${posts.isEmpty()}">No published stories yet.</p>
+	</section>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

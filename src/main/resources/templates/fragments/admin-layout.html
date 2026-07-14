@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<head th:fragment="admin-panel-head(title)">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title th:text="${title}">Admin</title>
+	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<head th:fragment="admin-dashboard-head(title)">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title th:text="${title}">Admin</title>
+	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+</head>
+
+<th:block th:fragment="sidebar(activePage)">
+<input type="checkbox" id="admin-sidebar-toggle" class="admin-sidebar-checkbox" hidden>
+<label class="admin-sidebar-backdrop" for="admin-sidebar-toggle" aria-hidden="true"></label>
+<aside class="admin-sidebar" id="admin-sidebar">
+	<div class="admin-sidebar-brand">
+		<a class="admin-sidebar-logo" th:href="@{/admin}">
+			<img class="site-logo" th:src="@{/images/logo.svg}" alt="">
+			<span>Admin</span>
+		</a>
+	</div>
+	<nav class="admin-sidebar-nav" aria-label="Admin navigation">
+		<a th:href="@{/admin}" th:classappend="${activePage == 'dashboard'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">▣</span>
+			Dashboard
+		</a>
+		<a th:href="@{/admin/users}" th:classappend="${activePage == 'users'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">◎</span>
+			Users
+		</a>
+		<a th:href="@{/admin/posts}" th:classappend="${activePage == 'posts'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">¶</span>
+			Posts
+		</a>
+		<a th:href="@{/admin/comments}" th:classappend="${activePage == 'comments'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">◈</span>
+			Comments
+		</a>
+		<a th:href="@{/admin/settings}" th:classappend="${activePage == 'site-settings'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">⚙</span>
+			Site settings
+		</a>
+		<a th:href="@{/admin/profile}" th:classappend="${activePage == 'profile'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">◉</span>
+			Profile
+		</a>
+	</nav>
+	<div class="admin-sidebar-footer">
+		<a class="admin-sidebar-link" th:href="@{/}" target="_blank" rel="noopener">View site</a>
+		<form th:action="@{/logout}" method="post" class="admin-sidebar-logout">
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			<button type="submit" class="admin-sidebar-logout-btn">Sign out</button>
+		</form>
+	</div>
+</aside>
+</th:block>
+
+<header class="admin-topbar" th:fragment="topbar(pageTitle)">
+	<label for="admin-sidebar-toggle" class="admin-sidebar-toggle" aria-label="Toggle sidebar">
+		<span class="admin-nav-toggle-icon" aria-hidden="true"></span>
+	</label>
+	<div class="admin-topbar-title">
+		<h1 th:text="${pageTitle}">Admin</h1>
+	</div>
+	<div class="admin-topbar-actions" th:if="${adminUser != null}">
+		<div class="admin-topbar-user">
+			<img th:replace="~{fragments/layout :: avatar-img(${adminUser.avatarUrl}, 'admin-avatar')}">
+			<span class="admin-topbar-name" th:text="${adminUser.displayName}">Admin</span>
+		</div>
+	</div>
+</header>
+
+</body>
+</html>

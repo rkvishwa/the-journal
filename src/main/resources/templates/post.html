@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head(${post.title + ' — ' + siteSettings.siteName})}"></head>
+<body class="public-body">
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="article-page">
+	<nav class="article-nav">
+		<a class="back-link" th:href="@{/}">← Back to home</a>
+	</nav>
+	<article class="article">
+		<header class="article-header">
+			<div class="article-meta">
+				<time th:text="${#temporals.format(post.publishedAt, 'MMMM d, yyyy')}">July 14, 2026</time>
+				<span class="meta-dot">·</span>
+				<a class="article-author" th:href="@{'/@' + ${post.author.username}}">
+					<img th:replace="~{fragments/layout :: avatar-img(${post.author.avatarUrl}, 'author-avatar')}">
+					<span th:text="${post.author.displayName}">Author</span>
+				</a>
+			</div>
+			<h1 th:text="${post.title}">Post title</h1>
+			<p class="article-deck" th:if="${post.excerpt}" th:text="${post.excerpt}">Excerpt</p>
+			<div class="article-actions">
+				<span class="useful-count" th:text="${usefulCount} + ' found this useful'">0 found this useful</span>
+				<div class="article-action-buttons" sec:authorize="isAuthenticated()">
+					<form th:action="@{/engagement/posts/{id}/useful(id=${post.id})}" method="post" class="inline-form">
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+						<button type="submit" class="action-btn" th:text="${useful} ? 'Remove useful' : 'Mark useful'">Mark useful</button>
+					</form>
+					<form th:action="@{/engagement/posts/{id}/save(id=${post.id})}" method="post" class="inline-form">
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+						<button type="submit" class="action-btn" th:text="${saved} ? 'Saved' : 'Save for later'">Save</button>
+					</form>
+					<form th:action="@{/engagement/creators/{username}/subscribe(username=${post.author.username})}" method="post" class="inline-form">
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+						<button type="submit" class="action-btn" th:text="${subscribed} ? 'Unfollow' : 'Follow creator'">Follow</button>
+					</form>
+				</div>
+			</div>
+			<div class="keywords article-tags" th:if="${!post.keywords.isEmpty()}">
+				<a th:each="keyword : ${post.keywords}" th:href="@{/keywords/{slug}(slug=${keyword.slug})}" th:text="${keyword.name}">Keyword</a>
+			</div>
+		</header>
+		<div class="content" th:utext="${post.contentHtml}"></div>
+	</article>
+
+	<section class="comments-section">
+		<h2>Comments</h2>
+		<p class="notice" th:if="${message}" th:text="${message}"></p>
+		<div sec:authorize="!isAuthenticated()" class="comment-signin">
+			<a th:href="@{/login}">Sign in</a> to leave a comment.
+		</div>
+		<form sec:authorize="isAuthenticated()" th:action="@{/comments/posts/{id}(id=${post.id})}" method="post" class="comment-form">
+			<label>
+				<span>Add a comment</span>
+				<textarea name="body" rows="4" maxlength="2000" required placeholder="Share your thoughts…"></textarea>
+			</label>
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			<button type="submit">Submit comment</button>
+			<small>Comments are reviewed by the creator before appearing.</small>
+		</form>
+		<div class="comment-list" th:if="${!comments.isEmpty()}">
+			<article class="comment-item" th:each="comment : ${comments}">
+				<div class="comment-meta">
+					<strong th:text="${comment.author.username}">user</strong>
+					<time th:text="${#temporals.format(comment.createdAt, 'MMM d, yyyy')}">Jul 14</time>
+				</div>
+				<p th:text="${comment.body}">Comment body</p>
+			</article>
+		</div>
+		<p class="empty-state" th:if="${comments.isEmpty()}">No comments yet.</p>
+	</section>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

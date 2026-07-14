@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="public-head(title)">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title th:text="${title}">Blog</title>
+	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<head th:fragment="editor-head(title)">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title th:text="${title}">Blog</title>
+	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css">
+</head>
+
+<body>
+
+<a class="brand" th:fragment="public-brand" th:href="@{/}">
+	<img class="site-logo" th:src="@{/images/logo.svg}" alt="">
+	<span class="brand-text" th:text="${siteSettings.siteName}">The Journal</span>
+</a>
+
+<a class="brand admin-brand" th:fragment="admin-brand" th:href="@{/studio}">
+	<img class="site-logo" th:src="@{/images/logo.svg}" alt="">
+	<span class="brand-text">Studio</span>
+</a>
+
+<header class="site-header" th:fragment="public-header">
+	<input type="checkbox" id="site-nav-toggle" class="site-nav-checkbox" hidden>
+	<div class="header-shell">
+		<div class="header-inner">
+			<a class="brand" th:replace="~{fragments/layout :: public-brand}"></a>
+			<label for="site-nav-toggle" class="site-nav-toggle admin-nav-toggle" aria-label="Toggle menu">
+				<span class="admin-nav-toggle-icon" aria-hidden="true"></span>
+			</label>
+			<nav class="site-nav" id="site-nav" aria-label="Site">
+				<a class="nav-link" th:href="@{/}">Home</a>
+				<span sec:authorize="hasRole('MEMBER')">
+					<a class="nav-link" th:href="@{/creators}">Creators</a>
+					<a class="nav-link" th:href="@{/saved}">Saved</a>
+					<a class="nav-link" th:href="@{/subscriptions}">Following</a>
+					<a class="nav-link" th:href="@{/studio/write}">Write</a>
+				</span>
+				<a class="nav-cta" th:href="@{/login}" sec:authorize="!isAuthenticated()">Sign in</a>
+				<a class="nav-cta secondary" th:href="@{/register}" sec:authorize="!isAuthenticated()">Register</a>
+				<a class="nav-link" th:href="@{/studio}" sec:authorize="hasRole('MEMBER')">Studio</a>
+				<a class="nav-link" th:href="@{/admin}" sec:authorize="hasRole('ADMIN')">Admin</a>
+				<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline-form">
+					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+					<button type="submit" class="nav-link-btn">Sign out</button>
+				</form>
+			</nav>
+		</div>
+	</div>
+	<label class="site-nav-backdrop" for="site-nav-toggle" aria-hidden="true"></label>
+</header>
+
+<footer class="site-footer" th:fragment="public-footer">
+	<div class="footer-shell">
+		<div class="footer-inner">
+			<div class="footer-brand">
+				<a class="footer-logo" th:href="@{/}">
+					<img class="site-logo" th:src="@{/images/logo.svg}" alt="">
+					<span class="footer-name" th:text="${siteSettings.siteName}">The Journal</span>
+				</a>
+				<p class="footer-tagline" th:text="${siteSettings.tagline}">Ideas worth keeping.</p>
+			</div>
+			<nav class="footer-nav" aria-label="Footer">
+				<a th:href="@{/}">Home</a>
+				<a th:href="@{/creators}" sec:authorize="hasRole('MEMBER')">Creators</a>
+				<a th:href="@{/studio/write}" sec:authorize="hasRole('MEMBER')">Write</a>
+			</nav>
+		</div>
+		<p class="footer-copy">© <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span> <span th:text="${siteSettings.siteName}">The Journal</span></p>
+	</div>
+	<script th:src="@{/js/app.js}" defer></script>
+</footer>
+
+<header class="admin-header" th:fragment="admin-header(activePage)">
+	<div class="admin-header-inner">
+		<a class="admin-brand" th:replace="~{fragments/layout :: admin-brand}"></a>
+		<button type="button" class="admin-nav-toggle" aria-expanded="false" aria-controls="admin-nav" aria-label="Toggle menu">
+			<span class="admin-nav-toggle-icon" aria-hidden="true"></span>
+		</button>
+		<nav class="admin-nav" id="admin-nav">
+			<a th:href="@{/studio}" th:classappend="${activePage == 'list'} ? 'is-active' : ''">Posts</a>
+			<a th:href="@{/studio/write}" th:classappend="${activePage == 'write'} ? 'is-active' : ''">Write</a>
+			<a th:href="@{/studio/comments}" th:classappend="${activePage == 'comments'} ? 'is-active' : ''">Comments</a>
+			<a th:href="@{/settings}" th:classappend="${activePage == 'settings'} ? 'is-active' : ''">Settings</a>
+		</nav>
+		<div class="admin-header-actions">
+			<a class="admin-header-link" th:href="@{/}" target="_blank" rel="noopener">View site</a>
+			<form th:action="@{/logout}" method="post" class="admin-logout-form">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+				<button type="submit" class="admin-logout-btn">Sign out</button>
+			</form>
+		</div>
+	</div>
+</header>
+
+<img th:fragment="avatar-img(url, cssClass)"
+		th:with="resolved=${(url != null and !#strings.isEmpty(url)) ? url : '/images/avatar-placeholder.svg'}"
+		th:src="${resolved}"
+		th:class="${cssClass}"
+		referrerpolicy="no-referrer"
+		th:onerror="|this.onerror=null;this.src='@{/images/avatar-placeholder.svg}';|"
+		alt="">
+
+</body>
+</html>

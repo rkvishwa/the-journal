@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: public-head('Verify email')}"></head>
+<body>
+<main class="auth-page">
+	<div class="auth-card">
+		<h1>Verify your email</h1>
+		<p class="auth-subtitle">Enter the 6-digit code we sent to your email.</p>
+		<p class="notice" th:if="${message}" th:text="${message}"></p>
+		<form th:action="@{/verify-email}" th:object="${verifyForm}" method="post">
+			<label>
+				<span>Verification code</span>
+				<input type="text" th:field="*{code}" maxlength="6" required autofocus>
+				<small class="error" th:errors="*{code}"></small>
+				<small class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></small>
+			</label>
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			<button type="submit">Verify</button>
+		</form>
+	</div>
+</main>
+</body>
+</html>

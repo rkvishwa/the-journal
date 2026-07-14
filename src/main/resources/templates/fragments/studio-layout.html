@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<head th:fragment="studio-panel-head(title)">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title th:text="${title}">Studio</title>
+	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<head th:fragment="studio-editor-head(title)">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title th:text="${title}">Studio</title>
+	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css">
+</head>
+
+<th:block th:fragment="sidebar(activePage)">
+<input type="checkbox" id="studio-sidebar-toggle" class="admin-sidebar-checkbox" hidden>
+<label class="admin-sidebar-backdrop" for="studio-sidebar-toggle" aria-hidden="true"></label>
+<aside class="admin-sidebar studio-sidebar" id="studio-sidebar">
+	<div class="admin-sidebar-brand">
+		<a class="admin-sidebar-logo" th:href="@{/studio}">
+			<img class="site-logo" th:src="@{/images/logo.svg}" alt="">
+			<span>Studio</span>
+		</a>
+	</div>
+	<nav class="admin-sidebar-nav" aria-label="Studio navigation">
+		<a th:href="@{/studio}" th:classappend="${activePage == 'list'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">¶</span>
+			My posts
+		</a>
+		<a th:href="@{/studio/write}" th:classappend="${activePage == 'write'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">✎</span>
+			Write
+		</a>
+		<a th:href="@{/studio/comments}" th:classappend="${activePage == 'comments'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">◈</span>
+			Comments
+		</a>
+		<a th:href="@{/settings}" th:classappend="${activePage == 'settings'} ? 'is-active' : ''">
+			<span class="admin-nav-icon" aria-hidden="true">◉</span>
+			Settings
+		</a>
+	</nav>
+	<div class="admin-sidebar-footer">
+		<a class="admin-sidebar-link" th:href="@{/}" target="_blank" rel="noopener">View site</a>
+		<a class="admin-sidebar-link" th:href="@{/admin}" sec:authorize="hasRole('ADMIN')">Admin</a>
+		<form th:action="@{/logout}" method="post" class="admin-sidebar-logout">
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			<button type="submit" class="admin-sidebar-logout-btn">Sign out</button>
+		</form>
+	</div>
+</aside>
+</th:block>
+
+<header class="admin-topbar studio-topbar" th:fragment="topbar(pageTitle)">
+	<label for="studio-sidebar-toggle" class="admin-sidebar-toggle" aria-label="Toggle sidebar">
+		<span class="admin-nav-toggle-icon" aria-hidden="true"></span>
+	</label>
+	<div class="admin-topbar-title">
+		<h1 th:text="${pageTitle}">Studio</h1>
+	</div>
+	<div class="admin-topbar-actions" th:if="${studioUser != null}">
+		<div class="admin-topbar-user">
+			<img th:replace="~{fragments/layout :: avatar-img(${studioUser.avatarUrl}, 'admin-avatar')}">
+			<span class="admin-topbar-name" th:text="${studioUser.displayName}">Creator</span>
+		</div>
+	</div>
+</header>
+
+</body>
+</html>

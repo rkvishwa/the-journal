@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head('Access Denied')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="error-page">
+	<section class="error-panel">
+		<p class="error-code">403</p>
+		<h1>Access denied.</h1>
+		<p>You do not have permission to perform this action.</p>
+		<div class="button-row">
+			<a class="button" th:href="@{/admin}">Dashboard</a>
+			<a class="button secondary" th:href="@{/}">Back to writing</a>
+		</div>
+	</section>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

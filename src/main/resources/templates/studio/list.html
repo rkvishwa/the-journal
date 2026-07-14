@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/studio-layout :: studio-panel-head('My posts — Studio')}"></head>
+<body class="admin-body admin-panel-body">
+<div class="admin-shell studio-shell">
+	<aside th:replace="~{fragments/studio-layout :: sidebar(activePage='list')}"></aside>
+	<div class="admin-main">
+		<header th:replace="~{fragments/studio-layout :: topbar(pageTitle='My posts')}"></header>
+		<main class="admin-content">
+			<div class="page-header">
+				<div>
+					<p class="eyebrow">Workspace</p>
+					<p class="field-hint">Manage drafts, published posts, and scheduled articles.</p>
+				</div>
+				<a class="button" th:href="@{/studio/write}">Write</a>
+			</div>
+			<p class="notice" th:if="${message}" th:text="${message}">Saved.</p>
+			<div class="admin-table-wrap" th:if="${!posts.isEmpty()}">
+				<table class="admin-data-table">
+					<thead>
+					<tr>
+						<th>Title</th>
+						<th>Status</th>
+						<th>Updated</th>
+						<th>Actions</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="post : ${posts}">
+						<td class="post-title-cell" data-label="Title">
+							<strong th:text="${post.title}">Title</strong>
+							<span class="slug" th:text="'/@' + ${post.author.username} + '/' + ${post.slug}">/slug</span>
+						</td>
+						<td class="status-cell" data-label="Status">
+							<span class="status-badge"
+									th:classappend="${post.status.name() == 'PUBLISHED'} ? 'is-published' : (${post.status.name() == 'SCHEDULED'} ? 'is-scheduled' : 'is-draft')"
+									th:text="${post.status.name() == 'PUBLISHED'} ? 'Published' : (${post.status.name() == 'SCHEDULED'} ? 'Scheduled' : 'Draft')">Draft</span>
+							<span class="scheduled-at" th:if="${post.status.name() == 'SCHEDULED' and post.scheduledAt != null}"
+								  th:text="${#temporals.format(post.scheduledAt, 'MMM d, yyyy · h:mm a')}">Jul 13, 2026 · 9:00 AM</span>
+						</td>
+						<td data-label="Updated" th:text="${#temporals.format(post.updatedAt, 'MMM d, yyyy')}">Jul 14</td>
+						<td class="actions" data-label="Actions">
+							<a th:href="@{/studio/posts/{id}/edit(id=${post.id})}">Edit</a>
+							<a th:if="${post.published}" th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}" target="_blank">View</a>
+							<form th:action="@{/studio/posts/{id}/delete(id=${post.id})}" method="post" class="delete-form inline-form">
+								<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+								<button type="submit" class="button secondary">Delete</button>
+							</form>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<p class="empty-state" th:if="${posts.isEmpty()}">No posts yet. Start writing.</p>
+		</main>
+	</div>
+</div>
+<script th:src="@{/js/app.js}" defer></script>
+</body>
+</html>

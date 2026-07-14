@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/admin-layout :: admin-dashboard-head('Dashboard — Admin')}"></head>
+<body class="admin-body admin-panel-body">
+<div class="admin-shell">
+	<aside th:replace="~{fragments/admin-layout :: sidebar(activePage='dashboard')}"></aside>
+	<div class="admin-main">
+		<header th:replace="~{fragments/admin-layout :: topbar(pageTitle='Dashboard')}"></header>
+		<main class="admin-content">
+			<div class="admin-stats">
+				<div class="stat-card">
+					<strong th:text="${stats.userCount}">0</strong>
+					<span>Total users</span>
+				</div>
+				<div class="stat-card">
+					<strong th:text="${stats.activeUserCount}">0</strong>
+					<span>Active users</span>
+				</div>
+				<div class="stat-card">
+					<strong th:text="${stats.postCount}">0</strong>
+					<span>Total posts</span>
+				</div>
+				<div class="stat-card">
+					<strong th:text="${stats.publishedCount}">0</strong>
+					<span>Published</span>
+				</div>
+				<div class="stat-card">
+					<strong th:text="${stats.draftCount}">0</strong>
+					<span>Drafts</span>
+				</div>
+				<div class="stat-card">
+					<strong th:text="${stats.pendingComments}">0</strong>
+					<span>Pending comments</span>
+				</div>
+				<div class="stat-card">
+					<strong th:text="${stats.totalReactions}">0</strong>
+					<span>Reactions</span>
+				</div>
+			</div>
+
+			<div class="chart-grid">
+				<div class="chart-card">
+					<h2>New users (30 days)</h2>
+					<canvas id="users-chart" th:attr="data-labels=${#strings.listJoin(stats.userRegistrations.![day], ',')},
+						data-values=${#strings.listJoin(stats.userRegistrations.![count], ',')}"></canvas>
+				</div>
+				<div class="chart-card">
+					<h2>Posts published (30 days)</h2>
+					<canvas id="posts-chart" th:attr="data-labels=${#strings.listJoin(stats.publishedPosts.![day], ',')},
+						data-values=${#strings.listJoin(stats.publishedPosts.![count], ',')}"></canvas>
+				</div>
+				<div class="chart-card chart-card-sm">
+					<h2>Post status</h2>
+					<canvas id="post-status-chart"
+							th:attr="data-labels=${#strings.listJoin(stats.postStatusLabels, ',')},
+							data-values=${#strings.listJoin(stats.postStatusValues, ',')}"></canvas>
+				</div>
+				<div class="chart-card chart-card-sm">
+					<h2>Comment status</h2>
+					<canvas id="comment-status-chart"
+							th:attr="data-labels=${#strings.listJoin(stats.commentStatusLabels, ',')},
+							data-values=${#strings.listJoin(stats.commentStatusValues, ',')}"></canvas>
+				</div>
+			</div>
+
+			<div class="admin-activity-grid">
+				<section class="panel">
+					<div class="panel-header">
+						<h2>Recent users</h2>
+						<a th:href="@{/admin/users}">View all</a>
+					</div>
+					<ul class="activity-list" th:if="${!stats.recentUsers.isEmpty()}">
+						<li th:each="user : ${stats.recentUsers}">
+							<span class="activity-title" th:text="${user.username}">user</span>
+							<span class="activity-meta" th:text="${user.email}">email</span>
+						</li>
+					</ul>
+					<p class="empty-state" th:if="${stats.recentUsers.isEmpty()}">No users yet.</p>
+				</section>
+				<section class="panel">
+					<div class="panel-header">
+						<h2>Recent posts</h2>
+						<a th:href="@{/admin/posts}">View all</a>
+					</div>
+					<ul class="activity-list" th:if="${!stats.recentPosts.isEmpty()}">
+						<li th:each="post : ${stats.recentPosts}">
+							<span class="activity-title" th:text="${post.title}">Title</span>
+							<span class="activity-meta">
+								<span th:text="${post.status}">DRAFT</span>
+								·
+								<span th:text="${post.author.username}">author</span>
+							</span>
+						</li>
+					</ul>
+					<p class="empty-state" th:if="${stats.recentPosts.isEmpty()}">No posts yet.</p>
+				</section>
+				<section class="panel">
+					<div class="panel-header">
+						<h2>Quick actions</h2>
+					</div>
+					<div class="quick-actions">
+						<a class="button secondary" th:href="@{/admin/comments}">
+							Moderate comments
+							<span class="badge" th:if="${stats.pendingComments > 0}" th:text="${stats.pendingComments}">0</span>
+						</a>
+						<a class="button secondary" th:href="@{/admin/users}">Manage users</a>
+						<a class="button secondary" th:href="@{/admin/settings}">Site settings</a>
+						<a class="button secondary" th:href="@{/studio}">Open studio</a>
+					</div>
+				</section>
+			</div>
+		</main>
+	</div>
+</div>
+<script th:src="@{/js/app.js}" defer></script>
+<script th:src="@{/js/admin-dashboard.js}" defer></script>
+</body>
+</html>

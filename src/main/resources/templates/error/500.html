@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head('Server Error')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="error-page">
+	<section class="error-panel">
+		<p class="error-code">500</p>
+		<h1>Something went wrong.</h1>
+		<p>The blog engine hit a server problem. Please try again in a moment.</p>
+		<div class="button-row">
+			<a class="button" th:href="@{/}">Back to writing</a>
+			<a class="button secondary" th:href="@{/admin}">Dashboard</a>
+		</div>
+	</section>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

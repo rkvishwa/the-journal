@@ -1,0 +1,14 @@
+.git
+.gitignore
+.DS_Store
+.idea/
+*.iml
+*.log
+.env
+.env.*
+!.env.example
+!.env.production.example
+target/
+data/
+bin/
+backups/

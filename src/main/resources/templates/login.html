@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head('Sign in — ' + ${siteSettings.siteName})}"></head>
+<body class="public-body">
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="auth-page">
+	<div class="auth-card">
+		<h1>Welcome back</h1>
+		<p class="auth-subtitle">Sign in with your email or username.</p>
+		<p class="notice" th:if="${param.oauth_error}" th:text="${param.oauth_error[0]}">Sign-in with Google failed.</p>
+		<p class="notice" th:if="${param.error != null and param.oauth_error == null}">Invalid email/username or password.</p>
+		<p class="notice" th:if="${message}" th:text="${message}"></p>
+		<form th:action="@{/login}" method="post">
+			<label>
+				<span>Email or username</span>
+				<input type="text" name="username" autocomplete="username" required autofocus>
+			</label>
+			<label>
+				<span>Password</span>
+				<input type="password" name="password" autocomplete="current-password" required>
+			</label>
+			<div class="auth-forgot-row">
+				<a class="auth-forgot" th:href="@{/forgot-password}">Forgot password?</a>
+			</div>
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			<button type="submit" class="auth-submit">Sign in</button>
+		</form>
+		<div class="auth-divider" aria-hidden="true"><span>or</span></div>
+		<a class="auth-google-btn" th:href="@{/oauth2/authorization/google}">
+			<img class="auth-google-icon" th:src="@{/images/google.svg}" alt="">
+			<span>Continue with Google</span>
+		</a>
+		<p class="auth-signup-prompt">
+			Don't have an account?
+			<a th:href="@{/register}">Create account</a>
+		</p>
+	</div>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

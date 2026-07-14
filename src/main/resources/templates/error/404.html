@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head('Page Not Found')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="error-page">
+	<section class="error-panel">
+		<p class="error-code">404</p>
+		<h1>Page not found.</h1>
+		<p>The post or page you are looking for does not exist, or it may still be a draft.</p>
+		<div class="button-row">
+			<a class="button" th:href="@{/}">Back to writing</a>
+			<a class="button secondary" th:href="@{/admin}">Dashboard</a>
+		</div>
+	</section>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

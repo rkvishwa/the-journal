@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: public-head('Choose username — ' + ${siteSettings.siteName})}"></head>
+<body class="public-body">
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="auth-page">
+	<div class="auth-card">
+		<h1>Almost there</h1>
+		<p class="auth-subtitle">Pick a username to finish creating your account.</p>
+		<p class="notice" th:if="${googleName}" th:text="'Signed in with Google as ' + ${googleName}">Signed in with Google</p>
+		<p class="notice" th:if="${googleEmail}" th:text="${googleEmail}">you@example.com</p>
+		<form th:action="@{/oauth/complete}" th:object="${oauthCompleteForm}" method="post">
+			<label>
+				<span>Username</span>
+				<input type="text" th:field="*{username}" required autofocus>
+				<small class="error" th:errors="*{username}"></small>
+			</label>
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+			<button type="submit" class="auth-submit">Create account</button>
+		</form>
+		<p class="auth-signup-prompt">
+			<a th:href="@{/register}">Back to register</a>
+		</p>
+	</div>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>

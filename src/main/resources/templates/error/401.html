@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: public-head('Sign In Required')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: public-header}"></header>
+<main class="error-page">
+	<section class="error-panel">
+		<p class="error-code">401</p>
+		<h1>Please sign in first.</h1>
+		<p>This area is only available after creator login.</p>
+		<div class="button-row">
+			<a class="button" th:href="@{/login}">Sign in</a>
+			<a class="button secondary" th:href="@{/}">Back to writing</a>
+		</div>
+	</section>
+</main>
+<footer th:replace="~{fragments/layout :: public-footer}"></footer>
+</body>
+</html>
