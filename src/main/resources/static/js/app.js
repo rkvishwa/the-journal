@@ -92,4 +92,20 @@
 
 	wireTableSearch("user-search", "users-table");
 	wireTableSearch("post-search", "posts-table");
+
+	document.querySelectorAll(".password-toggle").forEach(function (toggle) {
+		var field = toggle.closest(".password-field");
+		var input = field ? field.querySelector("input") : null;
+
+		if (!input) {
+			return;
+		}
+
+		toggle.addEventListener("click", function () {
+			var visible = input.type === "text";
+			input.type = visible ? "password" : "text";
+			toggle.setAttribute("aria-pressed", visible ? "false" : "true");
+			toggle.setAttribute("aria-label", visible ? "Show password" : "Hide password");
+		});
+	});
 })();

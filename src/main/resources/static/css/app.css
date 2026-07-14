@@ -900,6 +900,58 @@ select:focus {
 	box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.06);
 }
 
+.password-field {
+	position: relative;
+	display: block;
+}
+
+.password-field input {
+	padding-right: 2.75rem;
+}
+
+.password-toggle {
+	position: absolute;
+	top: 50%;
+	right: 0.45rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 0;
+	padding: 0.35rem;
+	border: 0;
+	border-radius: var(--radius-sm);
+	background: transparent;
+	color: var(--muted);
+	transform: translateY(-50%);
+	cursor: pointer;
+}
+
+.password-toggle:hover {
+	color: var(--ink);
+	opacity: 1;
+}
+
+.password-toggle:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+.password-toggle-icon {
+	display: block;
+}
+
+.password-toggle-icon--hide {
+	display: none;
+}
+
+.password-toggle[aria-pressed="true"] .password-toggle-icon--show {
+	display: none;
+}
+
+.password-toggle[aria-pressed="true"] .password-toggle-icon--hide {
+	display: block;
+}
+
 textarea {
 	resize: vertical;
 	min-height: 5rem;

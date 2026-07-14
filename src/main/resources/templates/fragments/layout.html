@@ -4,6 +4,19 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title th:text="${title}">Blog</title>
+	<meta name="description" th:content="${siteSettings.tagline}">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" th:content="${siteSettings.siteName}">
+	<meta property="og:title" th:content="${title}">
+	<meta property="og:description" th:content="${siteSettings.tagline}">
+	<meta property="og:url" th:content="${pageUrl}">
+	<meta property="og:image" th:content="${siteBaseUrl + '/images/og-image.png'}">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" th:content="${title}">
+	<meta name="twitter:description" th:content="${siteSettings.tagline}">
+	<meta name="twitter:image" th:content="${siteBaseUrl + '/images/og-image.png'}">
 	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
