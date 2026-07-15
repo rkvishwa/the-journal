@@ -57,6 +57,8 @@
 			return;
 		}
 
+		document.documentElement.classList.add("has-scroll-progress");
+
 		function updateProgress() {
 			var scrollTop = window.scrollY;
 			var scrollable = document.documentElement.scrollHeight - window.innerHeight;

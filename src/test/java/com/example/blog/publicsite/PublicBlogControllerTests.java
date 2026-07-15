@@ -60,7 +60,7 @@ class PublicBlogControllerTests {
 	void homePageShowsSearchToolbar() throws Exception {
 		mockMvc.perform(get("/"))
 				.andExpect(status().isOk())
-				.andExpect(content().string(org.hamcrest.Matchers.containsString("catalog-toolbar")))
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("catalog-search-form")))
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("Search by title or author")));
 	}
 

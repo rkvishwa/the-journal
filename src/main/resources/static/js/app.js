@@ -108,4 +108,16 @@
 			toggle.setAttribute("aria-label", visible ? "Show password" : "Hide password");
 		});
 	});
+
+	document.addEventListener("click", function (event) {
+		if (window.matchMedia("(min-width: 900px)").matches) {
+			return;
+		}
+
+		document.querySelectorAll(".catalog-filters[open]").forEach(function (filters) {
+			if (!event.target.closest(".catalog-filters")) {
+				filters.open = false;
+			}
+		});
+	});
 })();

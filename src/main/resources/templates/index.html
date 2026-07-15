@@ -5,38 +5,54 @@
 <header th:replace="~{fragments/layout :: public-header}"></header>
 <main class="public-main catalog-main">
 	<section class="catalog-hero">
-		<h1 th:text="${siteSettings.siteName}">The Journal</h1>
-		<p th:text="${siteSettings.tagline}">Ideas worth keeping.</p>
-	</section>
-
-	<form class="catalog-toolbar" method="get" th:action="@{/}">
-		<label class="catalog-field catalog-field-search">
-			<span class="catalog-field-label">Search</span>
-			<input type="search" name="q" placeholder="Search by title or author…" th:value="${searchQuery}"
-					autocomplete="off">
-		</label>
-		<label class="catalog-field">
-			<span class="catalog-field-label">From</span>
-			<input type="date" name="from"
-					th:value="${searchFrom != null ? #temporals.format(searchFrom, 'yyyy-MM-dd') : ''}">
-		</label>
-		<label class="catalog-field">
-			<span class="catalog-field-label">To</span>
-			<input type="date" name="to"
-					th:value="${searchTo != null ? #temporals.format(searchTo, 'yyyy-MM-dd') : ''}">
-		</label>
-		<label class="catalog-field">
-			<span class="catalog-field-label">Sort</span>
-			<select name="sort">
-				<option value="latest" th:selected="${searchSort == 'latest'}">Latest first</option>
-				<option value="oldest" th:selected="${searchSort == 'oldest'}">Oldest first</option>
-			</select>
-		</label>
-		<div class="catalog-toolbar-actions">
-			<button type="submit" class="button">Apply</button>
-			<a class="button secondary" th:if="${searching}" th:href="@{/}">Clear</a>
+		<div class="catalog-hero-copy">
+			<h1 th:text="${siteSettings.siteName}">The Journal</h1>
+			<p th:text="${siteSettings.tagline}">Ideas worth keeping.</p>
 		</div>
-	</form>
+
+		<form class="catalog-search-form" method="get" th:action="@{/}">
+			<div class="catalog-search-row">
+				<label class="catalog-search-field">
+					<span class="catalog-field-label">Search</span>
+					<input type="search" name="q" placeholder="Search by title or author…" th:value="${searchQuery}"
+							autocomplete="off">
+				</label>
+				<details class="catalog-filters" th:open="${searching}">
+					<summary class="catalog-filters-summary">
+						<svg class="catalog-filters-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path>
+						</svg>
+						<span class="catalog-filters-label">Filters</span>
+						<span class="catalog-filters-badge" th:if="${searching}">Active</span>
+					</summary>
+					<div class="catalog-filters-panel">
+						<label class="catalog-filter-field">
+							<span class="catalog-field-label">From</span>
+							<input type="date" name="from"
+									th:value="${searchFrom != null ? #temporals.format(searchFrom, 'yyyy-MM-dd') : ''}">
+						</label>
+						<label class="catalog-filter-field">
+							<span class="catalog-field-label">To</span>
+							<input type="date" name="to"
+									th:value="${searchTo != null ? #temporals.format(searchTo, 'yyyy-MM-dd') : ''}">
+						</label>
+						<label class="catalog-filter-field">
+							<span class="catalog-field-label">Sort</span>
+							<select name="sort">
+								<option value="latest" th:selected="${searchSort == 'latest'}">Latest first</option>
+								<option value="oldest" th:selected="${searchSort == 'oldest'}">Oldest first</option>
+							</select>
+						</label>
+						<div class="catalog-filters-actions">
+							<button type="submit" class="button">Apply</button>
+							<a class="button secondary" th:if="${searching}" th:href="@{/}">Clear</a>
+						</div>
+					</div>
+				</details>
+				<button type="submit" class="button catalog-search-submit">Search</button>
+			</div>
+		</form>
+	</section>
 
 	<section class="feed-section" th:if="${searching}">
 		<h2>Results</h2>
