@@ -22,6 +22,10 @@ public class PostForm {
 
 	private String keywords = "";
 
+	private String coverImageUrl;
+
+	private boolean removeCover;
+
 	private PostStatus status = PostStatus.DRAFT;
 
 	private LocalDateTime scheduledAt;
@@ -32,6 +36,7 @@ public class PostForm {
 		form.setExcerpt(post.getExcerpt());
 		form.setContentHtml(post.getContentHtml());
 		form.setKeywords(post.getKeywordText());
+		form.setCoverImageUrl(post.getCoverImageUrl());
 		form.setStatus(post.getStatus());
 		if (post.getScheduledAt() != null) {
 			form.setScheduledAt(LocalDateTime.ofInstant(post.getScheduledAt(), ZoneId.systemDefault()));
@@ -77,6 +82,26 @@ public class PostForm {
 
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
+	}
+
+	public String getCoverImageUrl() {
+		return coverImageUrl;
+	}
+
+	public void setCoverImageUrl(String coverImageUrl) {
+		this.coverImageUrl = coverImageUrl;
+	}
+
+	public boolean isRemoveCover() {
+		return removeCover;
+	}
+
+	public void setRemoveCover(boolean removeCover) {
+		this.removeCover = removeCover;
+	}
+
+	public String getCoverDisplayUrl() {
+		return PostCovers.displayUrl(title, coverImageUrl);
 	}
 
 	public PostStatus getStatus() {

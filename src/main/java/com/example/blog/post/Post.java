@@ -43,6 +43,9 @@ public class Post {
 	@Column(nullable = false, columnDefinition = "LONGTEXT")
 	private String contentHtml;
 
+	@Column(length = 255)
+	private String coverImageUrl;
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
 	private PostStatus status = PostStatus.DRAFT;
@@ -113,6 +116,22 @@ public class Post {
 
 	public void setContentHtml(String contentHtml) {
 		this.contentHtml = contentHtml;
+	}
+
+	public String getCoverImageUrl() {
+		return coverImageUrl;
+	}
+
+	public void setCoverImageUrl(String coverImageUrl) {
+		this.coverImageUrl = coverImageUrl;
+	}
+
+	public boolean hasCoverImage() {
+		return coverImageUrl != null && !coverImageUrl.isBlank();
+	}
+
+	public String getCoverDisplayUrl() {
+		return PostCovers.displayUrl(title, coverImageUrl);
 	}
 
 	public PostStatus getStatus() {

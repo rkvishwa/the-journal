@@ -9,41 +9,61 @@
 		<p th:text="${siteSettings.tagline}">Ideas worth keeping.</p>
 	</section>
 
-	<section class="feed-section">
+	<form class="catalog-toolbar" method="get" th:action="@{/}">
+		<label class="catalog-field catalog-field-search">
+			<span class="catalog-field-label">Search</span>
+			<input type="search" name="q" placeholder="Search by title or author…" th:value="${searchQuery}"
+					autocomplete="off">
+		</label>
+		<label class="catalog-field">
+			<span class="catalog-field-label">From</span>
+			<input type="date" name="from"
+					th:value="${searchFrom != null ? #temporals.format(searchFrom, 'yyyy-MM-dd') : ''}">
+		</label>
+		<label class="catalog-field">
+			<span class="catalog-field-label">To</span>
+			<input type="date" name="to"
+					th:value="${searchTo != null ? #temporals.format(searchTo, 'yyyy-MM-dd') : ''}">
+		</label>
+		<label class="catalog-field">
+			<span class="catalog-field-label">Sort</span>
+			<select name="sort">
+				<option value="latest" th:selected="${searchSort == 'latest'}">Latest first</option>
+				<option value="oldest" th:selected="${searchSort == 'oldest'}">Oldest first</option>
+			</select>
+		</label>
+		<div class="catalog-toolbar-actions">
+			<button type="submit" class="button">Apply</button>
+			<a class="button secondary" th:if="${searching}" th:href="@{/}">Clear</a>
+		</div>
+	</form>
+
+	<section class="feed-section" th:if="${searching}">
+		<h2>Results</h2>
+		<div class="catalog-grid" th:if="${!searchResults.isEmpty()}">
+			<th:block th:each="post : ${searchResults}">
+				<article th:replace="~{fragments/layout :: catalog-card(${post}, true, true)}"></article>
+			</th:block>
+		</div>
+		<p class="empty-state" th:if="${searchResults.isEmpty()}">No posts match your search.</p>
+	</section>
+
+	<section class="feed-section" th:unless="${searching}">
 		<h2>Latest</h2>
 		<div class="catalog-grid" th:if="${!latestPosts.isEmpty()}">
-			<article class="catalog-card" th:each="post : ${latestPosts}">
-				<a class="catalog-card-link" th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}"
-					 th:attr="aria-label=${'Read ' + post.title}"></a>
-				<div class="catalog-card-meta">
-					<a class="author-link catalog-card-author" th:href="@{'/@' + ${post.author.username}}">
-						<img th:replace="~{fragments/layout :: avatar-img(${post.author.avatarUrl}, 'author-avatar-sm')}">
-						<span th:text="${post.author.displayName}">Author</span>
-					</a>
-					<time th:text="${#temporals.format(post.publishedAt, 'MMM d, yyyy')}">Jul 14, 2026</time>
-				</div>
-				<h3 class="catalog-card-title" th:text="${post.title}">Title</h3>
-				<p class="catalog-card-excerpt" th:text="${post.excerpt}">Excerpt</p>
-			</article>
+			<th:block th:each="post : ${latestPosts}">
+				<article th:replace="~{fragments/layout :: catalog-card(${post}, true, true)}"></article>
+			</th:block>
 		</div>
 		<p class="empty-state" th:if="${latestPosts.isEmpty()}">No published stories yet. Be the first to write.</p>
 	</section>
 
-	<section class="feed-section">
+	<section class="feed-section" th:unless="${searching}">
 		<h2>Discover</h2>
 		<div class="catalog-grid" th:if="${!discoverPosts.isEmpty()}">
-			<article class="catalog-card" th:each="post : ${discoverPosts}">
-				<a class="catalog-card-link" th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}"
-					 th:attr="aria-label=${'Read ' + post.title}"></a>
-				<div class="catalog-card-meta">
-					<a class="author-link catalog-card-author" th:href="@{'/@' + ${post.author.username}}">
-						<img th:replace="~{fragments/layout :: avatar-img(${post.author.avatarUrl}, 'author-avatar-sm')}">
-						<span th:text="${post.author.displayName}">Author</span>
-					</a>
-				</div>
-				<h3 class="catalog-card-title" th:text="${post.title}">Title</h3>
-				<p class="catalog-card-excerpt" th:text="${post.excerpt}">Excerpt</p>
-			</article>
+			<th:block th:each="post : ${discoverPosts}">
+				<article th:replace="~{fragments/layout :: catalog-card(${post}, true, false)}"></article>
+			</th:block>
 		</div>
 	</section>
 </main>

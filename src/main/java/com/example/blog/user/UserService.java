@@ -73,6 +73,12 @@ public class UserService {
 	}
 
 	@Transactional
+	public void updateAvatar(User user, String avatarUrl) {
+		User managed = requireUser(user.getId());
+		managed.setAvatarUrl(avatarUrl);
+	}
+
+	@Transactional
 	public void updateProfile(User user, String displayName, String bio, String username) {
 		if (!user.getUsername().equalsIgnoreCase(username) && users.existsByUsernameIgnoreCase(username)) {
 			throw new RegistrationException("Username is already taken.");

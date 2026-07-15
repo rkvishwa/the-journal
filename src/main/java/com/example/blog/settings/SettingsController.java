@@ -2,6 +2,7 @@ package com.example.blog.settings;
 
 import com.example.blog.config.CurrentUser;
 import com.example.blog.config.CustomOAuth2UserService;
+import com.example.blog.upload.ImageStorageService;
 import com.example.blog.user.OAuthAccountLinkService;
 import com.example.blog.user.RegistrationException;
 import com.example.blog.user.User;
@@ -17,6 +18,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -25,11 +29,14 @@ public class SettingsController {
 	private final UserService users;
 	private final OAuthAccountLinkService oauthLinks;
 	private final PasswordEncoder passwordEncoder;
+	private final ImageStorageService images;
 
-	public SettingsController(UserService users, OAuthAccountLinkService oauthLinks, PasswordEncoder passwordEncoder) {
+	public SettingsController(UserService users, OAuthAccountLinkService oauthLinks, PasswordEncoder passwordEncoder,
+			ImageStorageService images) {
 		this.users = users;
 		this.oauthLinks = oauthLinks;
 		this.passwordEncoder = passwordEncoder;
+		this.images = images;
 	}
 
 	@GetMapping("/settings")
@@ -44,6 +51,21 @@ public class SettingsController {
 		model.addAttribute("googleLinked", oauthLinks.isGoogleLinked(user));
 		model.addAttribute("hasPassword", user.hasPassword());
 		return "settings";
+	}
+
+	@PostMapping("/settings/profile/avatar")
+	public String updateAvatar(@RequestParam("avatar") MultipartFile avatar, RedirectAttributes redirectAttributes) {
+		User user = CurrentUser.requireUser();
+		try {
+			String avatarUrl = images.store(avatar).url();
+			users.updateAvatar(user, avatarUrl);
+			user.setAvatarUrl(avatarUrl);
+			redirectAttributes.addFlashAttribute("message", "Profile picture updated.");
+		}
+		catch (ResponseStatusException exception) {
+			redirectAttributes.addFlashAttribute("error", exception.getReason());
+		}
+		return "redirect:/settings";
 	}
 
 	@PostMapping("/settings/profile")

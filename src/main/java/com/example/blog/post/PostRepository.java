@@ -53,4 +53,32 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 	@EntityGraph(attributePaths = { "author" })
 	List<Post> findTop10ByOrderByUpdatedAtDesc();
+
+	@EntityGraph(attributePaths = { "keywords", "author" })
+	@Query("""
+			SELECT p FROM Post p JOIN p.author a
+			WHERE p.status = :status
+			AND (:q IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :q, '%'))
+				OR LOWER(a.username) LIKE LOWER(CONCAT('%', :q, '%'))
+				OR LOWER(a.displayName) LIKE LOWER(CONCAT('%', :q, '%')))
+			AND (:from IS NULL OR p.publishedAt >= :from)
+			AND (:to IS NULL OR p.publishedAt <= :to)
+			ORDER BY p.publishedAt DESC, p.createdAt DESC
+			""")
+	List<Post> searchPublishedNewestFirst(@Param("status") PostStatus status, @Param("q") String q,
+			@Param("from") Instant from, @Param("to") Instant to);
+
+	@EntityGraph(attributePaths = { "keywords", "author" })
+	@Query("""
+			SELECT p FROM Post p JOIN p.author a
+			WHERE p.status = :status
+			AND (:q IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :q, '%'))
+				OR LOWER(a.username) LIKE LOWER(CONCAT('%', :q, '%'))
+				OR LOWER(a.displayName) LIKE LOWER(CONCAT('%', :q, '%')))
+			AND (:from IS NULL OR p.publishedAt >= :from)
+			AND (:to IS NULL OR p.publishedAt <= :to)
+			ORDER BY p.publishedAt ASC, p.createdAt ASC
+			""")
+	List<Post> searchPublishedOldestFirst(@Param("status") PostStatus status, @Param("q") String q,
+			@Param("from") Instant from, @Param("to") Instant to);
 }

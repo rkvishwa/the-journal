@@ -18,6 +18,7 @@
 	<meta name="twitter:description" th:content="${siteSettings.tagline}">
 	<meta name="twitter:image" th:content="${siteBaseUrl + '/images/og-image.png'}">
 	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<script th:replace="~{fragments/layout :: theme-init}"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
@@ -29,6 +30,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title th:text="${title}">Blog</title>
 	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<script th:replace="~{fragments/layout :: theme-init}"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
@@ -37,6 +39,30 @@
 </head>
 
 <body>
+
+<script th:fragment="theme-init">
+(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.setAttribute("data-theme","dark")}}catch(e){}})();
+</script>
+
+<button type="button" class="theme-toggle" th:fragment="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+	<svg class="theme-toggle-icon theme-toggle-icon--sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<circle cx="12" cy="12" r="4"></circle>
+		<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+	</svg>
+	<svg class="theme-toggle-icon theme-toggle-icon--moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+	</svg>
+</button>
+
+<button type="button" class="theme-toggle theme-toggle--standalone" th:fragment="theme-toggle-standalone" aria-label="Switch to dark mode" aria-pressed="false">
+	<svg class="theme-toggle-icon theme-toggle-icon--sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<circle cx="12" cy="12" r="4"></circle>
+		<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+	</svg>
+	<svg class="theme-toggle-icon theme-toggle-icon--moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+	</svg>
+</button>
 
 <a class="brand" th:fragment="public-brand" th:href="@{/}">
 	<img class="site-logo" th:src="@{/images/logo.svg}" alt="">
@@ -64,6 +90,7 @@
 					<a class="nav-link" th:href="@{/subscriptions}">Following</a>
 					<a class="nav-link" th:href="@{/studio/write}">Write</a>
 				</span>
+				<th:block th:replace="~{fragments/layout :: theme-toggle}"></th:block>
 				<a class="nav-cta" th:href="@{/login}" sec:authorize="!isAuthenticated()">Sign in</a>
 				<a class="nav-cta secondary" th:href="@{/register}" sec:authorize="!isAuthenticated()">Register</a>
 				<a class="nav-link" th:href="@{/studio}" sec:authorize="hasRole('MEMBER')">Studio</a>
@@ -78,24 +105,81 @@
 	<label class="site-nav-backdrop" for="site-nav-toggle" aria-hidden="true"></label>
 </header>
 
+<div class="scroll-progress" th:fragment="scroll-progress" aria-hidden="true">
+	<div class="scroll-progress-bar"></div>
+</div>
+
+<button type="button" class="back-to-top" th:fragment="back-to-top" aria-label="Back to top" aria-hidden="true" tabindex="-1">
+	<svg class="back-to-top-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<path d="M12 19V5"></path>
+		<path d="m5 12 7-7 7 7"></path>
+	</svg>
+</button>
+
 <footer class="site-footer" th:fragment="public-footer">
+	<th:block th:replace="~{fragments/layout :: scroll-progress}"></th:block>
+	<th:block th:replace="~{fragments/layout :: back-to-top}"></th:block>
 	<div class="footer-shell">
-		<div class="footer-inner">
+		<div class="footer-grid">
 			<div class="footer-brand">
 				<a class="footer-logo" th:href="@{/}">
 					<img class="site-logo" th:src="@{/images/logo.svg}" alt="">
 					<span class="footer-name" th:text="${siteSettings.siteName}">The Journal</span>
 				</a>
 				<p class="footer-tagline" th:text="${siteSettings.tagline}">Ideas worth keeping.</p>
+				<div class="footer-brand-actions">
+					<a class="button" th:href="@{/studio/write}" sec:authorize="hasRole('MEMBER')">Write a story</a>
+					<a class="button secondary" th:href="@{/register}" sec:authorize="!isAuthenticated()">Start writing</a>
+				</div>
 			</div>
-			<nav class="footer-nav" aria-label="Footer">
-				<a th:href="@{/}">Home</a>
-				<a th:href="@{/creators}" sec:authorize="hasRole('MEMBER')">Creators</a>
-				<a th:href="@{/studio/write}" sec:authorize="hasRole('MEMBER')">Write</a>
-			</nav>
+
+			<div class="footer-links-group">
+				<h3 class="footer-links-heading">Explore</h3>
+				<ul class="footer-links">
+					<li><a th:href="@{/}">Home</a></li>
+					<li><a th:href="@{'/?sort=latest'}">Latest stories</a></li>
+					<li><a th:href="@{'/?sort=oldest'}">Oldest stories</a></li>
+					<li><a th:href="@{/creators}" sec:authorize="hasRole('MEMBER')">Creators</a></li>
+				</ul>
+			</div>
+
+			<div class="footer-links-group" sec:authorize="hasRole('MEMBER')">
+				<h3 class="footer-links-heading">Your library</h3>
+				<ul class="footer-links">
+					<li><a th:href="@{/saved}">Saved posts</a></li>
+					<li><a th:href="@{/subscriptions}">Following</a></li>
+					<li><a th:href="@{/studio}">Studio</a></li>
+					<li><a th:href="@{/studio/write}">Write</a></li>
+					<li><a th:href="@{/settings}">Settings</a></li>
+				</ul>
+			</div>
+
+			<div class="footer-links-group" sec:authorize="!isAuthenticated()">
+				<h3 class="footer-links-heading">Account</h3>
+				<ul class="footer-links">
+					<li><a th:href="@{/login}">Sign in</a></li>
+					<li><a th:href="@{/register}">Create account</a></li>
+					<li><a th:href="@{/forgot-password}">Forgot password</a></li>
+				</ul>
+			</div>
+
+			<div class="footer-links-group" sec:authorize="hasRole('ADMIN')">
+				<h3 class="footer-links-heading">Admin</h3>
+				<ul class="footer-links">
+					<li><a th:href="@{/admin}">Dashboard</a></li>
+					<li><a th:href="@{/admin/posts}">Posts</a></li>
+					<li><a th:href="@{/admin/users}">Users</a></li>
+					<li><a th:href="@{/admin/settings}">Site settings</a></li>
+				</ul>
+			</div>
 		</div>
-		<p class="footer-copy">© <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span> <span th:text="${siteSettings.siteName}">The Journal</span></p>
+
+		<div class="footer-bottom">
+			<p class="footer-copy">© <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span> <span th:text="${siteSettings.siteName}">The Journal</span>. All rights reserved.</p>
+			<p class="footer-note">Read, write, and share ideas.</p>
+		</div>
 	</div>
+	<script th:src="@{/js/theme.js}" defer></script>
 	<script th:src="@{/js/app.js}" defer></script>
 </footer>
 
@@ -128,6 +212,40 @@
 		referrerpolicy="no-referrer"
 		th:onerror="|this.onerror=null;this.src='@{/images/avatar-placeholder.svg}';|"
 		alt="">
+
+<article th:fragment="catalog-card(post, showAuthor, showDate)" class="catalog-card">
+	<a class="catalog-card-link" th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}"
+		 th:attr="aria-label=${'Read ' + post.title}"></a>
+	<div class="catalog-card-cover">
+		<img th:src="${post.coverDisplayUrl}" th:alt="${post.title}" loading="lazy">
+	</div>
+	<div class="catalog-card-body">
+		<div class="catalog-card-meta" th:if="${showAuthor}">
+			<a class="author-link catalog-card-author" th:href="@{'/@' + ${post.author.username}}">
+				<img th:replace="~{fragments/layout :: avatar-img(${post.author.avatarUrl}, 'author-avatar-sm')}">
+				<span th:text="${post.author.displayName}">Author</span>
+			</a>
+			<time th:if="${showDate}" th:text="${#temporals.format(post.publishedAt, 'MMM d, yyyy')}">Jul 14, 2026</time>
+		</div>
+		<h3 class="catalog-card-title" th:text="${post.title}">Title</h3>
+		<p class="catalog-card-excerpt" th:text="${post.excerpt}">Excerpt</p>
+	</div>
+</article>
+
+<article th:fragment="feed-card(post)" class="feed-card">
+	<div class="feed-card-cover">
+		<a th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}">
+			<img th:src="${post.coverDisplayUrl}" th:alt="${post.title}" loading="lazy">
+		</a>
+	</div>
+	<div class="feed-card-top">
+		<time class="feed-date" th:text="${#temporals.format(post.publishedAt, 'MMM d, yyyy')}">Jul 13, 2026</time>
+	</div>
+	<h3 class="feed-title">
+		<a th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}" th:text="${post.title}">Post title</a>
+	</h3>
+	<p class="feed-excerpt" th:text="${post.excerpt}">Excerpt</p>
+</article>
 
 </body>
 </html>

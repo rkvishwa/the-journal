@@ -3,6 +3,7 @@ package com.example.blog.admin;
 import com.example.blog.comment.CommentService;
 import com.example.blog.config.CurrentUser;
 import com.example.blog.config.CustomOAuth2UserService;
+import com.example.blog.upload.ImageStorageService;
 import com.example.blog.post.PostRepository;
 import com.example.blog.post.PostStatus;
 import com.example.blog.settings.ChangePasswordForm;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -39,11 +43,12 @@ public class AdminPlatformController {
 	private final EmailVerificationService emailVerification;
 	private final OAuthAccountLinkService oauthLinks;
 	private final PasswordEncoder passwordEncoder;
+	private final ImageStorageService images;
 
 	public AdminPlatformController(UserRepository users, UserService userService, PostRepository posts,
 			CommentService comments, SiteSettingsService siteSettings, AdminAnalyticsService analytics,
 			EmailVerificationService emailVerification, OAuthAccountLinkService oauthLinks,
-			PasswordEncoder passwordEncoder) {
+			PasswordEncoder passwordEncoder, ImageStorageService images) {
 		this.users = users;
 		this.userService = userService;
 		this.posts = posts;
@@ -53,6 +58,7 @@ public class AdminPlatformController {
 		this.emailVerification = emailVerification;
 		this.oauthLinks = oauthLinks;
 		this.passwordEncoder = passwordEncoder;
+		this.images = images;
 	}
 
 	@ModelAttribute
@@ -165,6 +171,21 @@ public class AdminPlatformController {
 		model.addAttribute("currentEmail", user.getEmail());
 		model.addAttribute("googleLinked", oauthLinks.isGoogleLinked(user));
 		model.addAttribute("hasPassword", user.hasPassword());
+	}
+
+	@PostMapping("/admin/profile/avatar")
+	public String updateAvatar(@RequestParam("avatar") MultipartFile avatar, RedirectAttributes redirectAttributes) {
+		User user = CurrentUser.requireUser();
+		try {
+			String avatarUrl = images.store(avatar).url();
+			userService.updateAvatar(user, avatarUrl);
+			user.setAvatarUrl(avatarUrl);
+			redirectAttributes.addFlashAttribute("message", "Profile picture updated.");
+		}
+		catch (ResponseStatusException exception) {
+			redirectAttributes.addFlashAttribute("error", exception.getReason());
+		}
+		return "redirect:/admin/profile";
 	}
 
 	@PostMapping("/admin/profile")

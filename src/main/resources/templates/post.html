@@ -8,6 +8,9 @@
 		<a class="back-link" th:href="@{/}">← Back to home</a>
 	</nav>
 	<article class="article">
+		<div class="article-cover">
+			<img th:src="${post.coverDisplayUrl}" th:alt="${post.title}">
+		</div>
 		<header class="article-header">
 			<div class="article-meta">
 				<time th:text="${#temporals.format(post.publishedAt, 'MMMM d, yyyy')}">July 14, 2026</time>

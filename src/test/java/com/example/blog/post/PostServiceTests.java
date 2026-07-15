@@ -2,6 +2,8 @@ package com.example.blog.post;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+
 import com.example.blog.user.User;
 import com.example.blog.user.UserRepository;
 
@@ -69,6 +71,37 @@ class PostServiceTests {
 	}
 
 	@Test
+	void searchPublishedMatchesTitleAndAuthor() {
+		posts.create(form("Spring Boot Guide", PostStatus.PUBLISHED), author);
+		posts.create(form("Other Topic", PostStatus.PUBLISHED), author);
+
+		assertThat(posts.searchPublished("Spring", null, null, "latest"))
+				.extracting(Post::getTitle)
+				.containsExactly("Spring Boot Guide");
+		assertThat(posts.searchPublished("creator", null, null, "latest"))
+				.extracting(Post::getTitle)
+				.contains("Spring Boot Guide", "Other Topic");
+	}
+
+	@Test
+	void searchPublishedFiltersByDateAndSortOrder() {
+		posts.create(form("Today Post", PostStatus.PUBLISHED), author);
+		LocalDate today = LocalDate.now();
+
+		assertThat(posts.searchPublished(null, today, today, "latest"))
+				.extracting(Post::getTitle)
+				.contains("Today Post");
+		assertThat(posts.searchPublished(null, today.minusDays(7), today.minusDays(1), "latest")).isEmpty();
+
+		var newest = posts.searchPublished(null, null, null, "latest");
+		var oldest = posts.searchPublished(null, null, null, "oldest");
+		assertThat(newest).isNotEmpty();
+		assertThat(oldest).isNotEmpty();
+		assertThat(newest.get(0).getPublishedAt()).isAfterOrEqualTo(newest.get(newest.size() - 1).getPublishedAt());
+		assertThat(oldest.get(0).getPublishedAt()).isBeforeOrEqualTo(oldest.get(oldest.size() - 1).getPublishedAt());
+	}
+
+	@Test
 	void sanitizesUnsafeHtmlAndKeepsFormatting() {
 		PostForm form = form("Formatted Post", PostStatus.PUBLISHED);
 		form.setContentHtml("""
@@ -95,6 +128,18 @@ class PostServiceTests {
 				.doesNotContain("<script")
 				.doesNotContain("javascript:")
 				.doesNotContain("https://example.com/external.png");
+	}
+
+	@Test
+	void coverDisplayUrlUsesUploadedImageOrTitleFallback() {
+		Post post = posts.create(form("Cover Story", PostStatus.PUBLISHED), author);
+
+		assertThat(posts.coverDisplayUrl(post)).contains("/posts/cover.svg?title=");
+		assertThat(posts.coverDisplayUrl(post)).contains("Cover");
+
+		post.setCoverImageUrl("/uploads/cover.jpg");
+		assertThat(posts.coverDisplayUrl(post)).isEqualTo("/uploads/cover.jpg");
+		assertThat(post.getCoverDisplayUrl()).isEqualTo("/uploads/cover.jpg");
 	}
 
 	private PostForm form(String title, PostStatus status) {

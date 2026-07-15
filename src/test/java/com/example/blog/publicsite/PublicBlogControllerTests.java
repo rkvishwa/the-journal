@@ -57,6 +57,25 @@ class PublicBlogControllerTests {
 	}
 
 	@Test
+	void homePageShowsSearchToolbar() throws Exception {
+		mockMvc.perform(get("/"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("catalog-toolbar")))
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Search by title or author")));
+	}
+
+	@Test
+	void homePageSearchByTitle() throws Exception {
+		posts.create(form("Unique Alpha Post", PostStatus.PUBLISHED), author);
+		posts.create(form("Unique Beta Post", PostStatus.PUBLISHED), author);
+
+		mockMvc.perform(get("/").param("q", "Alpha"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Unique Alpha Post")))
+				.andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Unique Beta Post"))));
+	}
+
+	@Test
 	void adminRequiresLogin() throws Exception {
 		mockMvc.perform(get("/admin")).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/login"));
 	}

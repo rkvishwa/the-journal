@@ -8,10 +8,14 @@ import com.example.blog.post.PostService;
 import com.example.blog.user.User;
 import com.example.blog.user.UserRepository;
 
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -34,10 +38,28 @@ public class PublicBlogController {
 	}
 
 	@GetMapping("/")
-	public String home(Model model) {
-		model.addAttribute("latestPosts", posts.latestPublished(12));
-		model.addAttribute("discoverPosts", posts.discoverPublished(12));
+	public String home(@RequestParam(required = false) String q,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+			@RequestParam(defaultValue = "latest") String sort, Model model) {
+		boolean searching = isNotBlank(q) || from != null || to != null || "oldest".equalsIgnoreCase(sort);
+		model.addAttribute("searchQuery", q == null ? "" : q);
+		model.addAttribute("searchFrom", from);
+		model.addAttribute("searchTo", to);
+		model.addAttribute("searchSort", sort);
+		model.addAttribute("searching", searching);
+		if (searching) {
+			model.addAttribute("searchResults", posts.searchPublished(q, from, to, sort));
+		}
+		else {
+			model.addAttribute("latestPosts", posts.latestPublished(12));
+			model.addAttribute("discoverPosts", posts.discoverPublished(12));
+		}
 		return "index";
+	}
+
+	private static boolean isNotBlank(String value) {
+		return value != null && !value.isBlank();
 	}
 
 	@GetMapping("/posts/{slug}")

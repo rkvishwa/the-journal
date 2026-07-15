@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title th:text="${title}">Studio</title>
 	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<script th:replace="~{fragments/layout :: theme-init}"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
@@ -18,6 +19,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title th:text="${title}">Studio</title>
 	<link rel="icon" th:href="@{/images/favicon.svg}" type="image/svg+xml">
+	<script th:replace="~{fragments/layout :: theme-init}"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
@@ -62,6 +64,7 @@
 		</form>
 	</div>
 </aside>
+<th:block th:replace="~{fragments/layout :: back-to-top}"></th:block>
 </th:block>
 
 <header class="admin-topbar studio-topbar" th:fragment="topbar(pageTitle)">
@@ -71,8 +74,9 @@
 	<div class="admin-topbar-title">
 		<h1 th:text="${pageTitle}">Studio</h1>
 	</div>
-	<div class="admin-topbar-actions" th:if="${studioUser != null}">
-		<div class="admin-topbar-user">
+	<div class="admin-topbar-actions">
+		<th:block th:replace="~{fragments/layout :: theme-toggle}"></th:block>
+		<div class="admin-topbar-user" th:if="${studioUser != null}">
 			<img th:replace="~{fragments/layout :: avatar-img(${studioUser.avatarUrl}, 'admin-avatar')}">
 			<span class="admin-topbar-name" th:text="${studioUser.displayName}">Creator</span>
 		</div>

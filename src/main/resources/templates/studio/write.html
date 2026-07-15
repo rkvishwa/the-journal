@@ -7,7 +7,8 @@
 	<div class="admin-main">
 		<header th:replace="~{fragments/studio-layout :: topbar(pageTitle='Write')}"></header>
 		<div class="studio-write-content">
-			<form class="studio-write-form" th:action="@{${action}}" th:object="${postForm}" method="post">
+			<form class="studio-write-form" th:action="@{${action}}" th:object="${postForm}" method="post"
+					enctype="multipart/form-data">
 				<header class="studio-write-bar">
 					<div class="studio-write-toolbar">
 						<label class="studio-keywords-field">
@@ -42,7 +43,29 @@
 					<input type="hidden" th:field="*{status}" id="post-status">
 				</header>
 				<main class="studio-write-main">
-					<input class="studio-title-input" th:field="*{title}" maxlength="160" required placeholder="Title">
+					<div class="studio-cover-field">
+						<label class="studio-cover-upload" id="cover-upload-label" for="cover-image-input">
+							<img id="cover-preview" class="studio-cover-preview" alt=""
+								 th:src="${postForm.coverDisplayUrl}">
+							<span class="studio-cover-placeholder" id="cover-placeholder">
+								<span class="studio-cover-icon" aria-hidden="true">+</span>
+								<span>Add cover image</span>
+								<span class="field-hint">JPEG, PNG, GIF, or WebP. Max 5 MB.</span>
+							</span>
+							<input type="file" id="cover-image-input" name="coverImage"
+									accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+						</label>
+						<div class="studio-cover-actions">
+							<button type="button" class="button secondary" id="cover-change-btn">Change image</button>
+							<button type="button" class="button secondary" id="cover-remove-btn"
+									th:classappend="${postForm.coverImageUrl == null or #strings.isEmpty(postForm.coverImageUrl)} ? 'is-hidden' : ''">
+								Remove
+							</button>
+						</div>
+						<input type="hidden" th:field="*{coverImageUrl}">
+						<input type="hidden" name="removeCover" id="remove-cover" th:value="*{removeCover}">
+					</div>
+					<input class="studio-title-input" th:field="*{title}" maxlength="160" required placeholder="Title" id="post-title">
 					<textarea class="studio-excerpt-input" th:field="*{excerpt}" maxlength="320" required placeholder="Tell readers what this is about…"></textarea>
 					<textarea class="content-input rich-text-input" th:field="*{contentHtml}" hidden></textarea>
 					<div id="blog-editor" class="blog-editor studio-editor" th:utext="${postForm.contentHtml}"></div>
@@ -56,8 +79,10 @@
 		</div>
 	</div>
 </div>
+<script th:src="@{/js/theme.js}" defer></script>
 <script th:src="@{/js/app.js}" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js" defer></script>
 <script th:src="@{/js/studio-editor.js}" defer></script>
+<script th:src="@{/js/studio-cover.js}" defer></script>
 </body>
 </html>

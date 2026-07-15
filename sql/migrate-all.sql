@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS posts (
     slug VARCHAR(180) NOT NULL,
     excerpt VARCHAR(320) NOT NULL,
     content_html LONGTEXT NOT NULL,
+    cover_image_url VARCHAR(255) NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'DRAFT',
     created_at TIMESTAMP(6) NOT NULL,
     updated_at TIMESTAMP(6) NOT NULL,

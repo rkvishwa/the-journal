@@ -2,7 +2,9 @@ package com.example.blog.post;
 
 import java.text.Normalizer;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,10 +17,12 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.example.blog.upload.ImageStorageService;
 import com.example.blog.user.User;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class PostService {
@@ -29,11 +33,16 @@ public class PostService {
 	private final PostRepository posts;
 	private final KeywordRepository keywords;
 	private final BlogHtmlSanitizer sanitizer;
+	private final ImageStorageService images;
+	private final PostCoverSvgRenderer coverRenderer;
 
-	public PostService(PostRepository posts, KeywordRepository keywords, BlogHtmlSanitizer sanitizer) {
+	public PostService(PostRepository posts, KeywordRepository keywords, BlogHtmlSanitizer sanitizer,
+			ImageStorageService images, PostCoverSvgRenderer coverRenderer) {
 		this.posts = posts;
 		this.keywords = keywords;
 		this.sanitizer = sanitizer;
+		this.images = images;
+		this.coverRenderer = coverRenderer;
 	}
 
 	@Transactional(readOnly = true)
@@ -46,6 +55,18 @@ public class PostService {
 		return posts.findTop12ByStatusOrderByPublishedAtDescCreatedAtDesc(PostStatus.PUBLISHED).stream()
 				.limit(limit)
 				.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public List<Post> searchPublished(String query, LocalDate from, LocalDate to, String sort) {
+		String q = query == null || query.isBlank() ? null : query.trim();
+		Instant fromInstant = from == null ? null : from.atStartOfDay(ZoneId.systemDefault()).toInstant();
+		Instant toInstant = to == null ? null
+				: to.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
+		if ("oldest".equalsIgnoreCase(sort)) {
+			return posts.searchPublishedOldestFirst(PostStatus.PUBLISHED, q, fromInstant, toInstant);
+		}
+		return posts.searchPublishedNewestFirst(PostStatus.PUBLISHED, q, fromInstant, toInstant);
 	}
 
 	@Transactional(readOnly = true)
@@ -103,19 +124,37 @@ public class PostService {
 
 	@Transactional
 	public Post create(PostForm form, User author) {
+		return create(form, author, null);
+	}
+
+	@Transactional
+	public Post create(PostForm form, User author, MultipartFile coverImage) {
 		Post post = new Post();
 		post.setAuthor(author);
-		applyForm(post, form);
+		applyForm(post, form, coverImage);
 		post.setSlug(uniqueSlug(form.getTitle(), author.getId(), null));
 		return posts.save(post);
 	}
 
 	@Transactional
 	public Post update(Long id, PostForm form, User author) {
+		return update(id, form, author, null);
+	}
+
+	@Transactional
+	public Post update(Long id, PostForm form, User author, MultipartFile coverImage) {
 		Post post = requireOwnedPost(id, author);
-		applyForm(post, form);
+		applyForm(post, form, coverImage);
 		post.setSlug(uniqueSlug(form.getTitle(), author.getId(), id));
 		return posts.save(post);
+	}
+
+	public String coverDisplayUrl(Post post) {
+		return post.getCoverDisplayUrl();
+	}
+
+	public String coverDisplayUrl(String title, String coverImageUrl) {
+		return PostCovers.displayUrl(title, coverImageUrl);
 	}
 
 	@Transactional
@@ -157,11 +196,12 @@ public class PostService {
 		return slug.isBlank() ? "post" : slug;
 	}
 
-	private void applyForm(Post post, PostForm form) {
+	private void applyForm(Post post, PostForm form, MultipartFile coverImage) {
 		PostStatus previousStatus = post.getStatus();
 		post.setTitle(form.getTitle().trim());
 		post.setExcerpt(form.getExcerpt().trim());
 		post.setContentHtml(sanitizer.sanitize(form.getContentHtml().trim()));
+		applyCoverImage(post, form, coverImage);
 		PostStatus newStatus = form.getStatus() == null ? PostStatus.DRAFT : form.getStatus();
 		post.setStatus(newStatus);
 		if (newStatus == PostStatus.SCHEDULED) {
@@ -179,6 +219,20 @@ public class PostService {
 			post.setPublishedAt(null);
 		}
 		post.setKeywords(resolveKeywords(form.getKeywords()));
+	}
+
+	private void applyCoverImage(Post post, PostForm form, MultipartFile coverImage) {
+		if (coverImage != null && !coverImage.isEmpty()) {
+			post.setCoverImageUrl(images.store(coverImage).url());
+			return;
+		}
+		if (form.isRemoveCover()) {
+			post.setCoverImageUrl(null);
+			return;
+		}
+		if (form.getCoverImageUrl() != null && !form.getCoverImageUrl().isBlank()) {
+			post.setCoverImageUrl(form.getCoverImageUrl());
+		}
 	}
 
 	private Instant toInstant(LocalDateTime localDateTime) {

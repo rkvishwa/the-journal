@@ -18,12 +18,9 @@
 	<section class="feed-section">
 		<h2>Stories</h2>
 		<div class="catalog-grid">
-			<article class="catalog-card" th:each="post : ${posts}">
-				<a class="catalog-card-link" th:href="@{'/@' + ${creator.username} + '/' + ${post.slug}}"
-					 th:attr="aria-label=${'Read ' + post.title}"></a>
-				<h3 class="catalog-card-title" th:text="${post.title}">Title</h3>
-				<p class="catalog-card-excerpt" th:text="${post.excerpt}">Excerpt</p>
-			</article>
+			<th:block th:each="post : ${posts}">
+				<article th:replace="~{fragments/layout :: catalog-card(${post}, false, false)}"></article>
+			</th:block>
 		</div>
 		<p class="empty-state" th:if="${posts.isEmpty()}">No published stories yet.</p>
 	</section>

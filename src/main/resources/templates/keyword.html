@@ -13,15 +13,9 @@
 		<p class="topic-count" th:text="|${posts.size()} ${posts.size() == 1 ? 'article' : 'articles'}|">3 articles</p>
 	</section>
 	<section class="feed-list" th:if="${!posts.isEmpty()}">
-		<article class="feed-card" th:each="post : ${posts}">
-			<div class="feed-card-top">
-				<time class="feed-date" th:text="${#temporals.format(post.publishedAt, 'MMM d, yyyy')}">Jul 13, 2026</time>
-			</div>
-			<h3 class="feed-title">
-				<a th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}" th:text="${post.title}">Post title</a>
-			</h3>
-			<p class="feed-excerpt" th:text="${post.excerpt}">Excerpt</p>
-		</article>
+		<th:block th:each="post : ${posts}">
+			<article th:replace="~{fragments/layout :: feed-card(${post})}"></article>
+		</th:block>
 	</section>
 	<div class="empty-state" th:if="${posts.isEmpty()}">
 		<p class="empty-title">No articles yet</p>

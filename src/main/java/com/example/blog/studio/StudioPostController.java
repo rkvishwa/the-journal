@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -42,14 +44,15 @@ public class StudioPostController {
 	}
 
 	@PostMapping("/studio/posts")
-	public String create(@Valid @ModelAttribute PostForm postForm, BindingResult bindingResult, Model model,
+	public String create(@Valid @ModelAttribute PostForm postForm, BindingResult bindingResult,
+			@RequestParam(value = "coverImage", required = false) MultipartFile coverImage, Model model,
 			RedirectAttributes redirectAttributes) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("statuses", PostStatus.values());
 			model.addAttribute("action", "/studio/posts");
 			return "studio/write";
 		}
-		posts.create(postForm, CurrentUser.requireUser());
+		posts.create(postForm, CurrentUser.requireUser(), coverImage);
 		redirectAttributes.addFlashAttribute("message", "Post created.");
 		return "redirect:/studio";
 	}
@@ -66,13 +69,14 @@ public class StudioPostController {
 
 	@PostMapping("/studio/posts/{id}")
 	public String update(@PathVariable Long id, @Valid @ModelAttribute PostForm postForm, BindingResult bindingResult,
-			Model model, RedirectAttributes redirectAttributes) {
+			@RequestParam(value = "coverImage", required = false) MultipartFile coverImage, Model model,
+			RedirectAttributes redirectAttributes) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("statuses", PostStatus.values());
 			model.addAttribute("action", "/studio/posts/" + id);
 			return "studio/write";
 		}
-		posts.update(id, postForm, CurrentUser.requireUser());
+		posts.update(id, postForm, CurrentUser.requireUser(), coverImage);
 		redirectAttributes.addFlashAttribute("message", "Post saved.");
 		return "redirect:/studio";
 	}

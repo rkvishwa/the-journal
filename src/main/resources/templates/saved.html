@@ -6,17 +6,9 @@
 <main class="public-main">
 	<h1>Saved for later</h1>
 	<div class="catalog-grid">
-		<article class="catalog-card" th:each="post : ${posts}">
-			<a class="catalog-card-link" th:href="@{'/@' + ${post.author.username} + '/' + ${post.slug}}"
-				 th:attr="aria-label=${'Read ' + post.title}"></a>
-			<div class="catalog-card-meta">
-				<a class="author-link catalog-card-author" th:href="@{'/@' + ${post.author.username}}">
-					<span th:text="${post.author.displayName}">Author</span>
-				</a>
-			</div>
-			<h3 class="catalog-card-title" th:text="${post.title}">Title</h3>
-			<p class="catalog-card-excerpt" th:text="${post.excerpt}">Excerpt</p>
-		</article>
+		<th:block th:each="post : ${posts}">
+			<article th:replace="~{fragments/layout :: catalog-card(${post}, true, false)}"></article>
+		</th:block>
 	</div>
 	<p class="empty-state" th:if="${posts.isEmpty()}">Nothing saved yet.</p>
 </main>

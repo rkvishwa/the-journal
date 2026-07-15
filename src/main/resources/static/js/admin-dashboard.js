@@ -1,4 +1,6 @@
 (function () {
+	var charts = [];
+
 	function parseCsv(value) {
 		if (!value) {
 			return [];
@@ -17,6 +19,43 @@
 			return value;
 		}
 		return parts[1] + "/" + parts[2];
+	}
+
+	function cssVar(name) {
+		return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+	}
+
+	function chartColors() {
+		return [
+			cssVar("--chart-1"),
+			cssVar("--chart-2"),
+			cssVar("--chart-3"),
+			cssVar("--chart-4"),
+			cssVar("--chart-5")
+		];
+	}
+
+	function scaleOptions() {
+		return {
+			y: {
+				beginAtZero: true,
+				ticks: {
+					precision: 0,
+					color: cssVar("--chart-tick")
+				},
+				grid: {
+					color: cssVar("--chart-grid")
+				}
+			},
+			x: {
+				ticks: {
+					color: cssVar("--chart-tick")
+				},
+				grid: {
+					color: cssVar("--chart-grid")
+				}
+			}
+		};
 	}
 
 	function createLineChart(canvas, color) {
@@ -45,12 +84,7 @@
 				plugins: {
 					legend: { display: false }
 				},
-				scales: {
-					y: {
-						beginAtZero: true,
-						ticks: { precision: 0 }
-					}
-				}
+				scales: scaleOptions()
 			}
 		});
 	}
@@ -76,7 +110,10 @@
 				maintainAspectRatio: false,
 				plugins: {
 					legend: {
-						position: "bottom"
+						position: "bottom",
+						labels: {
+							color: cssVar("--chart-tick")
+						}
 					}
 				}
 			}
@@ -105,37 +142,41 @@
 				plugins: {
 					legend: { display: false }
 				},
-				scales: {
-					y: {
-						beginAtZero: true,
-						ticks: { precision: 0 }
-					}
-				}
+				scales: scaleOptions()
 			}
 		});
 	}
 
-	document.addEventListener("DOMContentLoaded", function () {
+	function initCharts() {
+		charts.forEach(function (chart) {
+			chart.destroy();
+		});
+		charts = [];
+
 		if (typeof Chart === "undefined") {
 			return;
 		}
 
+		var colors = chartColors();
 		var usersChart = document.getElementById("users-chart");
 		var postsChart = document.getElementById("posts-chart");
 		var postStatusChart = document.getElementById("post-status-chart");
 		var commentStatusChart = document.getElementById("comment-status-chart");
 
 		if (usersChart) {
-			createLineChart(usersChart, "#2d5a4a");
+			charts.push(createLineChart(usersChart, colors[0]));
 		}
 		if (postsChart) {
-			createLineChart(postsChart, "#8b5a2b");
+			charts.push(createLineChart(postsChart, colors[1]));
 		}
 		if (postStatusChart) {
-			createDoughnutChart(postStatusChart, ["#2d5a4a", "#8b5a2b", "#4a6fa5"]);
+			charts.push(createDoughnutChart(postStatusChart, colors.slice(0, 3)));
 		}
 		if (commentStatusChart) {
-			createBarChart(commentStatusChart, ["#b8860b", "#2d5a4a", "#8b3a3a"]);
+			charts.push(createBarChart(commentStatusChart, [colors[3], colors[0], colors[4]]));
 		}
-	});
+	}
+
+	document.addEventListener("DOMContentLoaded", initCharts);
+	document.addEventListener("themechange", initCharts);
 })();
