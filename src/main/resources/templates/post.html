@@ -6,6 +6,15 @@
 <main class="article-page">
 	<nav class="article-nav">
 		<a class="back-link" th:href="@{/}">← Back to home</a>
+		<div class="font-size-controls" aria-label="Article font size">
+			<span class="font-size-label">Text size</span>
+			<div class="font-size-options" role="group">
+				<button class="font-size-btn" data-size="small" title="Small">A</button>
+				<button class="font-size-btn active" data-size="default" title="Default">A</button>
+				<button class="font-size-btn" data-size="large" title="Large">A</button>
+				<button class="font-size-btn" data-size="xlarge" title="Extra Large">A</button>
+			</div>
+		</div>
 	</nav>
 	<article class="article">
 		<div class="article-cover">

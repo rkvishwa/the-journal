@@ -116,4 +116,50 @@
 			}
 		});
 	});
+
+	/* ── Article content font‑size picker ── */
+	(function () {
+		var STORAGE_KEY = "article-font-size";
+		var SIZES = ["small", "default", "large", "xlarge"];
+		var content = document.querySelector(".content");
+		var buttons = document.querySelectorAll(".font-size-btn");
+
+		if (!content || !buttons.length) {
+			return;
+		}
+
+		function applySize(size) {
+			if (!SIZES.includes(size)) {
+				size = "default";
+			}
+			// Remove all size classes, then add the chosen one
+			SIZES.forEach(function (s) {
+				content.classList.remove("content-size-" + s);
+			});
+			content.classList.add("content-size-" + size);
+
+			// Update active button
+			buttons.forEach(function (btn) {
+				btn.classList.toggle("active", btn.dataset.size === size);
+			});
+
+			try {
+				localStorage.setItem(STORAGE_KEY, size);
+			} catch (e) {}
+		}
+
+		// Restore saved preference (fall back to "default")
+		var saved;
+		try {
+			saved = localStorage.getItem(STORAGE_KEY);
+		} catch (e) {}
+		applySize(saved || "default");
+
+		// Wire up each button
+		buttons.forEach(function (btn) {
+			btn.addEventListener("click", function () {
+				applySize(btn.dataset.size);
+			});
+		});
+	})();
 })();

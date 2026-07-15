@@ -730,8 +730,80 @@ body.scroll-locked {
 
 .topic-nav,
 .article-nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 0.75rem;
 	margin-bottom: 1.5rem;
 }
+
+/* ── Font‑size controls ── */
+
+.font-size-controls {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.font-size-label {
+	font-size: 0.78rem;
+	font-weight: 500;
+	color: var(--muted);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	white-space: nowrap;
+}
+
+.font-size-options {
+	display: flex;
+	align-items: center;
+	gap: 0.2rem;
+	background: var(--surface-raised, var(--surface));
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	padding: 0.2rem 0.3rem;
+}
+
+.font-size-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	border-radius: 5px;
+	color: var(--muted);
+	font-family: var(--font-serif);
+	font-weight: 600;
+	line-height: 1;
+	padding: 0.25rem 0.42rem;
+	transition: background 0.15s, color 0.15s;
+}
+
+/* Scale each button's A to visually represent its size */
+.font-size-btn[data-size="small"]   { font-size: 0.72rem; }
+.font-size-btn[data-size="default"] { font-size: 0.9rem;  }
+.font-size-btn[data-size="large"]   { font-size: 1.1rem;  }
+.font-size-btn[data-size="xlarge"]  { font-size: 1.35rem; }
+
+.font-size-btn:hover {
+	background: var(--line-soft);
+	color: var(--ink);
+}
+
+.font-size-btn.active {
+	background: var(--accent);
+	color: #fff;
+}
+
+/* ── Content font‑size modifier classes ── */
+
+.content-size-small   { font-size: 0.9rem !important; }
+.content-size-default { font-size: 1.125rem !important; }
+.content-size-large   { font-size: 1.3rem !important; }
+.content-size-xlarge  { font-size: 1.5rem !important; }
+
 
 .topic-header {
 	margin-bottom: 2rem;
@@ -777,6 +849,7 @@ body.scroll-locked {
 	background: var(--surface);
 	box-shadow: var(--shadow-sm);
 	overflow-wrap: break-word;
+	word-break: normal;
 }
 
 .article-header {
@@ -839,6 +912,8 @@ body.scroll-locked {
 	line-height: 1.12;
 	letter-spacing: -0.025em;
 	overflow-wrap: break-word;
+	word-break: normal;
+	text-wrap: balance;
 }
 
 .article-deck {
@@ -849,6 +924,8 @@ body.scroll-locked {
 	font-style: italic;
 	line-height: 1.6;
 	overflow-wrap: break-word;
+	word-break: normal;
+	text-wrap: pretty;
 }
 
 .article-tags {
@@ -880,10 +957,12 @@ body.scroll-locked {
 	min-width: 0;
 	overflow-wrap: break-word;
 	word-wrap: break-word;
+	word-break: normal;
 	font-family: var(--font-serif);
 	font-size: 1.125rem;
 	line-height: 1.75;
 	color: var(--ink);
+	text-wrap: pretty;
 }
 
 .content > *:first-child {
@@ -898,6 +977,8 @@ body.scroll-locked {
 	margin: 0 0 1.35rem;
 	max-width: 100%;
 	overflow-wrap: break-word;
+	word-break: normal;
+	text-wrap: pretty;
 }
 
 .content h1,
@@ -909,6 +990,7 @@ body.scroll-locked {
 	font-weight: 500;
 	line-height: 1.25;
 	letter-spacing: -0.01em;
+	text-wrap: balance;
 }
 
 .content h2 {
@@ -952,6 +1034,7 @@ body.scroll-locked {
 
 .content li {
 	margin-bottom: 0.4rem;
+	text-wrap: pretty;
 }
 
 .content li::marker {
@@ -964,6 +1047,7 @@ body.scroll-locked {
 	border-left: 2px solid var(--line);
 	color: var(--muted);
 	font-style: italic;
+	text-wrap: pretty;
 }
 
 .content pre,
