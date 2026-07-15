@@ -84,8 +84,8 @@ echo "Applying database schema..."
 echo "Building application image and running tests..."
 "${COMPOSE[@]}" build app
 
-echo "Starting application and HTTPS proxy..."
-"${COMPOSE[@]}" up -d app caddy
+echo "Starting application, phpMyAdmin, and HTTPS proxy..."
+"${COMPOSE[@]}" up -d app phpmyadmin caddy
 
 echo
 echo "Deployment complete."

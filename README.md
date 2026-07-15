@@ -982,6 +982,7 @@ This repo includes a one-command Docker deployment for an Ubuntu VPS. It runs:
 
 - Spring Boot app container
 - MariaDB container with a persistent volume
+- phpMyAdmin container at `https://seinnlae.me/phpmyadmin/`
 - Caddy container for automatic HTTPS at `https://seinnlae.me`
 - Persistent upload storage at `/app/data/uploads` inside the app container
 
@@ -1017,7 +1018,25 @@ For logs:
 docker compose logs -f app
 docker compose logs -f caddy
 docker compose logs -f db
+docker compose logs -f phpmyadmin
 ```
+
+### phpMyAdmin (production database UI)
+
+phpMyAdmin is exposed publicly at:
+
+**https://seinnlae.me/phpmyadmin/**
+
+Log in with the database credentials from `.env` on the VPS:
+
+| Login | Username | Password |
+|-------|----------|----------|
+| Full admin access | `root` | `DB_ROOT_PASSWORD` |
+| App database user | `blog_app` (or `DB_USERNAME`) | `DB_PASSWORD` |
+
+After deploying, open that URL in a browser. Caddy terminates HTTPS and proxies `/phpmyadmin/` to the phpMyAdmin container.
+
+**Security note:** phpMyAdmin is internet-facing. Use long random passwords in `.env`, and consider restricting access later (VPN, IP allowlist, or Caddy basic auth) if the instance is targeted.
 
 ---
 

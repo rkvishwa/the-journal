@@ -38,6 +38,19 @@ services:
     expose:
       - "8080"
 
+  phpmyadmin:
+    image: phpmyadmin:5-apache
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ABSOLUTE_URI: ${PHPMYADMIN_ABSOLUTE_URI:-https://seinnlae.me/phpmyadmin/}
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "80"
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -50,6 +63,7 @@ services:
       - caddy-config:/config
     depends_on:
       - app
+      - phpmyadmin
 
 volumes:
   mariadb-data:

@@ -1,7 +1,15 @@
 seinnlae.me {
 	encode zstd gzip
 
-	reverse_proxy app:8080
+	redir /phpmyadmin /phpmyadmin/ permanent
+
+	handle_path /phpmyadmin/* {
+		reverse_proxy phpmyadmin:80
+	}
+
+	handle {
+		reverse_proxy app:8080
+	}
 }
 
 www.seinnlae.me {
