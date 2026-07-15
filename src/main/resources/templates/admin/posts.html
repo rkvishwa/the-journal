@@ -30,7 +30,7 @@
 							th:attr="data-search=${post.title + ' ' + post.author.username}">
 						<td class="post-title-cell" data-label="Title" th:text="${post.title}">Title</td>
 						<td data-label="Author" th:text="${post.author.username}">author</td>
-						<td data-label="Status">
+						<td class="status-cell" data-label="Status">
 							<span class="status-badge"
 									th:classappend="${post.status.name() == 'PUBLISHED'} ? 'is-published' : (${post.status.name() == 'SCHEDULED'} ? 'is-scheduled' : 'is-draft')"
 									th:text="${post.status}">DRAFT</span>

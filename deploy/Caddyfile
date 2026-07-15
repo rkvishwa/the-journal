@@ -3,7 +3,9 @@ seinnlae.me {
 
 	redir /phpmyadmin /phpmyadmin/ permanent
 
-	handle_path /phpmyadmin/* {
+	@phpmyadmin path /phpmyadmin /phpmyadmin/*
+	handle @phpmyadmin {
+		uri strip_prefix /phpmyadmin
 		reverse_proxy phpmyadmin:80
 	}
 

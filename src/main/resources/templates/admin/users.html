@@ -33,7 +33,7 @@
 						<td data-label="Roles">
 							<span class="badge" th:each="role : ${user.roles}" th:text="${role}">MEMBER</span>
 						</td>
-						<td data-label="Status">
+						<td class="status-cell" data-label="Status">
 							<span class="status-badge" th:classappend="${user.enabled} ? 'is-active' : 'is-disabled'"
 									th:text="${user.enabled} ? 'Active' : 'Disabled'">Active</span>
 						</td>

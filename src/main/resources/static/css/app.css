@@ -3609,6 +3609,7 @@ body:has(.site-nav-checkbox:checked) {
 }
 
 .admin-shell {
+	display: flex;
 	min-height: 100vh;
 	min-width: 0;
 	overflow-x: clip;
@@ -3725,12 +3726,13 @@ body:has(.site-nav-checkbox:checked) {
 .admin-main {
 	display: flex;
 	flex-direction: column;
+	flex: 1;
 	min-width: 0;
-	width: 100%;
+	width: auto;
 	max-width: 100%;
 	min-height: 100vh;
 	margin-left: var(--sidebar-width);
-	overflow-x: clip;
+	overflow-x: hidden;
 }
 
 .admin-topbar {
@@ -3768,6 +3770,7 @@ body:has(.site-nav-checkbox:checked) {
 	display: flex;
 	align-items: center;
 	gap: 1rem;
+	flex-shrink: 0;
 }
 
 .admin-topbar-user {
@@ -3808,7 +3811,11 @@ body:has(.site-nav-checkbox:checked) {
 	padding-left: max(1.5rem, env(safe-area-inset-left));
 	padding-right: max(1.5rem, env(safe-area-inset-right));
 	padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
-	overflow-x: clip;
+	overflow-x: hidden;
+}
+
+.admin-content .page-header {
+	min-width: 0;
 }
 
 .admin-content .panel {
@@ -3944,6 +3951,7 @@ body:has(.site-nav-checkbox:checked) {
 }
 
 .admin-table-wrap {
+	width: 100%;
 	min-width: 0;
 	max-width: 100%;
 	overflow-x: auto;
@@ -3956,6 +3964,7 @@ body:has(.site-nav-checkbox:checked) {
 .admin-data-table {
 	width: 100%;
 	border-collapse: collapse;
+	table-layout: fixed;
 }
 
 .admin-data-table th,
@@ -3963,6 +3972,36 @@ body:has(.site-nav-checkbox:checked) {
 	padding: 0.85rem 1rem;
 	text-align: left;
 	border-bottom: 1px solid var(--line);
+	min-width: 0;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+	vertical-align: top;
+}
+
+.admin-data-table th:last-child,
+.admin-data-table td.actions {
+	width: 11rem;
+}
+
+.admin-data-table td.status-cell {
+	width: 9.5rem;
+}
+
+.admin-data-table .post-title-cell,
+.admin-data-table .comment-body-cell {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.admin-data-table td.actions .admin-row-actions,
+.admin-data-table td.actions form,
+.admin-data-table td.actions .inline-form {
+	min-width: 0;
+}
+
+.admin-data-table td.actions .button,
+.admin-data-table td.actions button[type="submit"] {
+	white-space: nowrap;
 }
 
 .admin-data-table th {
@@ -4046,6 +4085,8 @@ body:has(.site-nav-checkbox:checked) {
 
 @media (max-width: 900px) {
 	.admin-main {
+		flex: none;
+		width: 100%;
 		margin-left: 0;
 	}
 

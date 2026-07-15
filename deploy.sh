@@ -85,7 +85,8 @@ echo "Building application image and running tests..."
 "${COMPOSE[@]}" build app
 
 echo "Starting application, phpMyAdmin, and HTTPS proxy..."
-"${COMPOSE[@]}" up -d app phpmyadmin caddy
+"${COMPOSE[@]}" up -d app phpmyadmin
+"${COMPOSE[@]}" up -d --force-recreate caddy
 
 echo
 echo "Deployment complete."
