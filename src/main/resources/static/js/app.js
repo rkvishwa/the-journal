@@ -109,34 +109,7 @@
 		});
 	});
 
-	var catalogFiltersQuery = window.matchMedia("(min-width: 900px)");
-
-	function syncCatalogFiltersState() {
-		var desktop = catalogFiltersQuery.matches;
-		document.querySelectorAll(".catalog-filters").forEach(function (filters) {
-			if (desktop) {
-				filters.setAttribute("open", "");
-				return;
-			}
-
-			if (!filters.querySelector(".catalog-filters-badge")) {
-				filters.removeAttribute("open");
-			}
-		});
-	}
-
-	syncCatalogFiltersState();
-	if (typeof catalogFiltersQuery.addEventListener === "function") {
-		catalogFiltersQuery.addEventListener("change", syncCatalogFiltersState);
-	} else if (typeof catalogFiltersQuery.addListener === "function") {
-		catalogFiltersQuery.addListener(syncCatalogFiltersState);
-	}
-
 	document.addEventListener("click", function (event) {
-		if (catalogFiltersQuery.matches) {
-			return;
-		}
-
 		document.querySelectorAll(".catalog-filters[open]").forEach(function (filters) {
 			if (!event.target.closest(".catalog-filters")) {
 				filters.open = false;
