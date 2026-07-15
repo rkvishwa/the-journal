@@ -81,22 +81,6 @@ echo "Applying database schema..."
 	-h 127.0.0.1 \
 	-u root < sql/migrate-all.sql
 
-echo "Applying incremental schema updates..."
-POST_COVER_COLUMN=$("${COMPOSE[@]}" exec -T -e MYSQL_PWD="${DB_ROOT_PASSWORD}" db mariadb \
-	-h 127.0.0.1 \
-	-u root \
-	-N -B \
-	-e "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'blog_engine' AND TABLE_NAME = 'posts' AND COLUMN_NAME = 'cover_image_url';")
-
-if [[ "${POST_COVER_COLUMN}" == "0" ]]; then
-	echo "Adding posts.cover_image_url column..."
-	"${COMPOSE[@]}" exec -T -e MYSQL_PWD="${DB_ROOT_PASSWORD}" db mariadb \
-		-h 127.0.0.1 \
-		-u root < sql/006_post_cover_image.sql
-else
-	echo "posts.cover_image_url already exists; skipping cover image migration."
-fi
-
 echo "Building application image and running tests..."
 "${COMPOSE[@]}" build app
 
