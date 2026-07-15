@@ -956,13 +956,14 @@ body.scroll-locked {
 	max-width: 100%;
 	min-width: 0;
 	overflow-wrap: break-word;
-	word-wrap: break-word;
 	word-break: normal;
+	-webkit-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
 	font-family: var(--font-serif);
 	font-size: 1.125rem;
 	line-height: 1.75;
 	color: var(--ink);
-	text-wrap: pretty;
 }
 
 .content > *:first-child {
@@ -978,7 +979,6 @@ body.scroll-locked {
 	max-width: 100%;
 	overflow-wrap: break-word;
 	word-break: normal;
-	text-wrap: pretty;
 }
 
 .content h1,
