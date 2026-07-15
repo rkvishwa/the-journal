@@ -955,11 +955,8 @@ body.scroll-locked {
 	margin-top: 2.5rem;
 	max-width: 100%;
 	min-width: 0;
-	overflow-wrap: break-word;
 	word-break: normal;
-	-webkit-hyphens: auto;
-	-ms-hyphens: auto;
-	hyphens: auto;
+	overflow-wrap: normal;
 	font-family: var(--font-serif);
 	font-size: 1.125rem;
 	line-height: 1.75;
@@ -977,8 +974,8 @@ body.scroll-locked {
 .content p {
 	margin: 0 0 1.35rem;
 	max-width: 100%;
-	overflow-wrap: break-word;
 	word-break: normal;
+	overflow-wrap: normal;
 }
 
 .content h1,
